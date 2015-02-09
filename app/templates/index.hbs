@@ -1,0 +1,18 @@
+<h1>Time entries</h1>
+
+<p>
+  {{#each entryList in this}}
+    <h2>
+      {{#if entryList.isRecent}}
+        {{ago entryList.date}}
+      {{else}}
+        {{moment entryList.date "ll"}}
+      {{/if}}
+    </h2>
+    <ul>
+      {{#each entry in entryList.entries}}
+        <li>{{entry.title}}</li>
+      {{/each}}
+    </ul>
+  {{/each}}
+</p>
