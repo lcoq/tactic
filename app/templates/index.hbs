@@ -1,6 +1,8 @@
-<h1>Time entries</h1>
+<section class="new-entry">
+  {{input placeholder="What are you working on ?"}}
+</section>
 
-<p>
+<section class="entry-list">
   {{#each entryList in this}}
     <h2>
       {{#if entryList.isRecent}}
@@ -15,4 +17,4 @@
       {{/each}}
     </ul>
   {{/each}}
-</p>
+</section>

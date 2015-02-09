@@ -15,6 +15,12 @@ Entry.reopenClass({
     }, {
       id: 3,
       title: 'International shipping: Staging deploy'
+    }, {
+      id: 4,
+      title: 'Custom messages on redirections'
+    }, {
+      id: 5,
+      title: 'Generic export'
     }
   ]
 });
