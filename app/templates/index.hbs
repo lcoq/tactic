@@ -21,30 +21,40 @@
     </h2>
     <ul>
       {{#each entry in entryList.entries itemController="entry"}}
-        <li {{bind-attr class=":entry entry.isEditing:entry-edit"}}>
-          <div>
-            {{#if entry.isEditing}}
+        {{#if entry.isEditing}}
+          <li class="entry entry-edit">
+            <div>
               {{input value=entry.title classNames="title"}}
-            {{else}}
-              <span class="title">{{entry.title}}</span>
-            {{/if}}
-            <span class="duration">{{entry.duration}}</span>
-            <span class="time-range">
-              {{moment entry.startedAt "H:mm"}}
-              -
-              {{moment entry.finishedAt "H:mm"}}
-            </span>
-          </div>
-          <div class="actions">
-            {{#if entry.isEditing}}
+              <span class="time">
+                {{input value=entry.startedAtHourOneWay focus-out="startedAtHourChanged"}}
+              </span>
+              to
+              <span class="time">
+                {{input value=entry.finishedAtHourOneWay focus-out="finishedAtHourChanged"}}
+              </span>
+            </div>
+            <div class="actions">
               <a href="" {{action "saveEntry"}}>Save</a>
               <a href="" {{action "restoreEntry"}}>Cancel</a>
-            {{else}}
+            </div>
+          </li>
+        {{else}}
+          <li class="entry">
+            <div>
+              <span class="title">{{entry.title}}</span>
+              <span class="duration">{{entry.duration}}</span>
+              <span class="time-range">
+                {{entry.startedAtHour}}
+                -
+                {{entry.finishedAtHour}}
+              </span>
+            </div>
+            <div class="actions">
               <a href="" {{action "editEntry"}}>Edit</a>
               <a href="" {{action "deleteEntry"}}>Delete</a>
-            {{/if}}
-          </div>
-        </li>
+            </div>
+          </li>
+        {{/if}}
       {{/each}}
     </ul>
   {{/each}}

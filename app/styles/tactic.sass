@@ -65,18 +65,10 @@ body
       display: inline-block
       width: 800px
       padding: 12px 12px 12px 0
-    input.title
-      padding: 10px
-      margin: 1px 1px 1px -11px
-      font-size: 1em
-      color: #333
-      border: 1px solid #DDD
-      +border-radius(4px, 4px)
-
     .duration
       display: inline-block
       margin-left: 20px
-      width: 11%
+      width: 120px
     .time-range
       color: #666
       font-size: 0.8em
@@ -85,3 +77,21 @@ body
       a
         color: #888
         font-size: 0.9em
+
+    &.entry-edit
+      input
+        padding: 10px
+        font-size: 1em
+        color: #333
+        border: 1px solid #DDD
+        +border-radius(4px, 4px)
+
+      .title
+        margin: 1px 1px 1px -11px
+      .time
+        display: inline-block
+        width: 120px
+        text-align: center
+        input
+          width: 60px
+          padding-left: 5px
