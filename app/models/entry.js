@@ -5,6 +5,7 @@ export default DS.Model.extend({
   title: DS.attr('string'),
   startedAt: DS.attr('date'),
   finishedAt: DS.attr('date'),
+  project: DS.attr('string'),
 
   duration: function() {
     var startedAt = this.get('startedAt'),
