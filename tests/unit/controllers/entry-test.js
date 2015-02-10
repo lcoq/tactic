@@ -5,7 +5,7 @@ import {
 
 moduleFor('controller:entry', 'EntryController', {
   // Specify the other units that are required for this test.
-  // needs: ['controller:foo']
+  needs: ['controller:index']
 });
 
 // Replace this with your real tests.

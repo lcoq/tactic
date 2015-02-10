@@ -1,6 +1,7 @@
 import Ember from 'ember';
 
 export default Ember.ObjectController.extend({
+  needs: 'index',
   isEditing: null,
 
   actions: {
@@ -14,6 +15,12 @@ export default Ember.ObjectController.extend({
     restoreEntry: function() {
       this.get('content').rollback();
       this.set('isEditing', false);
+    },
+    deleteEntry: function() {
+      var index = this.get('controllers.index');
+      this.get('content').destroyRecord().then(function() {
+        index.send('refresh');
+      });
     }
   }
 });

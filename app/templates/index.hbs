@@ -37,11 +37,11 @@
           </div>
           <div class="actions">
             {{#if entry.isEditing}}
-              <a href="" {{action "saveEntry" entry}}>Save</a>
-              <a href="" {{action "restoreEntry" entry}}>Cancel</a>
+              <a href="" {{action "saveEntry"}}>Save</a>
+              <a href="" {{action "restoreEntry"}}>Cancel</a>
             {{else}}
-              <a href="" {{action "editEntry" entry}}>Edit</a>
-              <a href="" {{action "deleteEntry" entry}}>Delete</a>
+              <a href="" {{action "editEntry"}}>Edit</a>
+              <a href="" {{action "deleteEntry"}}>Delete</a>
             {{/if}}
           </div>
         </li>
