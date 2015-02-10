@@ -15,6 +15,9 @@
       {{else}}
         {{moment entryList.date "ll"}}
       {{/if}}
+      <span class="duration">
+        {{entryList.duration}}
+      </span>
     </h2>
     <ul>
       {{#each entry in entryList.entries}}

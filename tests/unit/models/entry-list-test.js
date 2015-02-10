@@ -27,3 +27,18 @@ test('is is not recent 7 days ago', function() {
   Ember.run(function() { model.set('date', new Date(oldDate)); });
   ok(!model.get('isRecent'));
 });
+
+test('it duration is the sum of its entries durations', function() {
+  var model = this.subject();
+  Ember.run(function() {
+    model.get('entries').createRecord({
+      startedAt: new Date('2015-01-02T11:00:00Z'),
+      finishedAt: new Date('2015-01-02T12:23:00Z')
+    });
+    model.get('entries').createRecord({
+      startedAt: new Date('2015-01-01T09:00:00Z'),
+      finishedAt: new Date('2015-01-01T12:00:00Z')
+    });
+  });
+  equal(model.get('duration'), '4:23:00');
+});
