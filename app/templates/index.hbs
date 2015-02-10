@@ -22,13 +22,18 @@
     <ul>
       {{#each entry in entryList.entries}}
         <li class="entry">
-          <span class="title">{{entry.title}}</span>
-          <span class="duration">{{entry.duration}}</span>
-          <span class="time-range">
-            {{moment entry.startedAt "H:mm"}}
-            -
-            {{moment entry.finishedAt "H:mm"}}
-          </span>
+          <div>
+            <span class="title">{{entry.title}}</span>
+            <span class="duration">{{entry.duration}}</span>
+            <span class="time-range">
+              {{moment entry.startedAt "H:mm"}}
+              -
+              {{moment entry.finishedAt "H:mm"}}
+            </span>
+          </div>
+          <div class="actions">
+            <a href="" {{action "deleteEntry" entry}}>Delete</a>
+          </div>
         </li>
       {{/each}}
     </ul>

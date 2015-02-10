@@ -19,6 +19,12 @@ export default Ember.ArrayController.extend({
         self.send('refresh');
         self.buildNewEntry();
       });
+    },
+    deleteEntry: function(entry) {
+      var self = this;
+      entry.destroyRecord().then(function() {
+        self.send('refresh');
+      });
     }
   }
 });
