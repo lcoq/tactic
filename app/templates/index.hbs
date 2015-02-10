@@ -20,10 +20,14 @@
       </span>
     </h2>
     <ul>
-      {{#each entry in entryList.entries}}
-        <li class="entry">
+      {{#each entry in entryList.entries itemController="entry"}}
+        <li {{bind-attr class=":entry entry.isEditing:entry-edit"}}>
           <div>
-            <span class="title">{{entry.title}}</span>
+            {{#if entry.isEditing}}
+              {{input value=entry.title classNames="title"}}
+            {{else}}
+              <span class="title">{{entry.title}}</span>
+            {{/if}}
             <span class="duration">{{entry.duration}}</span>
             <span class="time-range">
               {{moment entry.startedAt "H:mm"}}
@@ -32,7 +36,13 @@
             </span>
           </div>
           <div class="actions">
-            <a href="" {{action "deleteEntry" entry}}>Delete</a>
+            {{#if entry.isEditing}}
+              <a href="" {{action "saveEntry" entry}}>Save</a>
+              <a href="" {{action "restoreEntry" entry}}>Cancel</a>
+            {{else}}
+              <a href="" {{action "editEntry" entry}}>Edit</a>
+              <a href="" {{action "deleteEntry" entry}}>Delete</a>
+            {{/if}}
           </div>
         </li>
       {{/each}}
