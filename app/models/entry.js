@@ -7,7 +7,10 @@ export default DS.Model.extend({
   finishedAt: DS.attr('date'),
 
   duration: function() {
-    var durationInMs = this.get('finishedAt').getTime() - this.get('startedAt').getTime();
-    return formatDuration(durationInMs);
+    var startedAt = this.get('startedAt'),
+        finishedAt = this.get('finishedAt');
+    if (startedAt && finishedAt) {
+      return formatDuration(finishedAt.getTime() - startedAt.getTime());
+    }
   }.property('startedAt', 'finishedAt')
 });

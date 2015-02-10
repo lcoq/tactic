@@ -21,12 +21,20 @@ body
 
 .new-entry
   input
-    width: 80%
     font-size: 1.2em
     border: 1px solid #DDD
     +border-radius(4px, 4px)
     padding: 15px
     margin: 40px 0
+    &.title
+      width: 45%
+    &.project
+      width: 18%
+    &.duration
+      background: #FFF
+      text-align: center
+      color: #888
+      width: 10%
 
   button
     width: 16%
