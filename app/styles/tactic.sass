@@ -16,24 +16,52 @@ body
     margin: 0
 
 .content
-  padding-left: 40px
+  width: 1080px
+  margin: auto
 
-.new-entry input
-  width: 60%
-  font-size: 1.2em
-  border: 1px solid #DDD
-  +border-radius(4px, 4px)
-  padding: 15px
-  margin: 40px 0
+.new-entry
+  input
+    width: 80%
+    font-size: 1.2em
+    border: 1px solid #DDD
+    +border-radius(4px, 4px)
+    padding: 15px
+    margin: 40px 0
+
+  button
+    width: 16%
+    font-size: 1.2em
+    margin: 0
+    padding: 16px
+    border: 0
+    +border-radius(4px, 4px)
+    color: #FFF
+
+    &.start-button
+      background-color: #4BC800
+    &.stop-button
+      background-color: #C84B00
+
 
 .entry-list
   color: #333
   h2
     color: #555
+    margin-bottom: 10px
   ul
     +no-bullets
     padding: 0
-    margin-bottom: 40px
-
-    li
-      padding: 8px 0
+    margin-top: 5px
+    margin-bottom: 45px
+  .entry
+    padding: 16px 0
+    border-bottom: 1px solid #DDD
+    .title
+      display: inline-block
+      width: 80%
+    .duration
+      display: inline-block
+      width: 11%
+    .time-range
+      color: #666
+      font-size: 0.8em

@@ -1,28 +1,24 @@
 import DS from 'ember-data';
 
-var Entry = DS.Model.extend({
-  title: DS.attr('string')
-});
+function integerToStringWithTwoNumbers(integer) {
+  var string = '' + integer;
+  if (string.length === 1) {
+    string = '0' + string;
+  }
+  return string;
+}
 
-Entry.reopenClass({
-  FIXTURES: [
-    {
-      id: 1,
-      title: 'SEO: Staging deploy'
-    }, {
-      id: 2,
-      title: 'International shipping: Zip code optional'
-    }, {
-      id: 3,
-      title: 'International shipping: Staging deploy'
-    }, {
-      id: 4,
-      title: 'Custom messages on redirections'
-    }, {
-      id: 5,
-      title: 'Generic export'
-    }
-  ]
-});
+export default DS.Model.extend({
+  title: DS.attr('string'),
+  startedAt: DS.attr('date'),
+  finishedAt: DS.attr('date'),
 
-export default Entry;
+  duration: function() {
+    var durationInMs = this.get('finishedAt').getTime() - this.get('startedAt').getTime();
+    var durationInS = parseInt(durationInMs / 1000);
+    var hours = parseInt(durationInS / 3600),
+        minutes = integerToStringWithTwoNumbers(parseInt(durationInS / 60) % 60),
+        seconds = integerToStringWithTwoNumbers(parseInt(durationInS) % 60);
+    return '' + hours + ':' + minutes + ':' + seconds;
+  }.property('startedAt', 'finishedAt')
+});

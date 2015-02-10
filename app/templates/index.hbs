@@ -1,5 +1,10 @@
 <section class="new-entry">
-  {{input placeholder="What are you working on ?"}}
+  {{input placeholder="What are you working on ?" value=newEntry.title}}
+  {{#if timerStarted}}
+    <button class="stop-button" {{action "stopTimer"}}>Stop</button>
+  {{else}}
+    <button class="start-button" {{action "startTimer"}}>Start</button>
+  {{/if}}
 </section>
 
 <section class="entry-list">
@@ -13,7 +18,15 @@
     </h2>
     <ul>
       {{#each entry in entryList.entries}}
-        <li>{{entry.title}}</li>
+        <li class="entry">
+          <span class="title">{{entry.title}}</span>
+          <span class="duration">{{entry.duration}}</span>
+          <span class="time-range">
+            {{moment entry.startedAt "H:mm"}}
+            -
+            {{moment entry.finishedAt "H:mm"}}
+          </span>
+        </li>
       {{/each}}
     </ul>
   {{/each}}
