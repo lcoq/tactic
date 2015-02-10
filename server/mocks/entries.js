@@ -13,7 +13,7 @@ module.exports = function(app) {
       'entry': [{
         id: 5,
         title: 'Time entry creation',
-        startedAt: new Date('2015-02-10T9:14:23Z'),
+        startedAt: new Date('2015-02-10T09:14:23Z'),
         finishedAt: new Date('2015-02-10T13:27:18Z')
       }]
     });
