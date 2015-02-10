@@ -38,7 +38,18 @@
           <li class="entry entry-edit">
             <div>
               {{input value=entry.title classNames="title"}}
-              {{input value=entry.projectName classNames="project"}}
+              <div class="project">
+                {{input value=entry.projectNameOneWay key-press="searchProjects"}}
+                {{#if entry.projectChoices}}
+                  <div class="project-choices">
+                    <ul>
+                      {{#each project in entry.projectChoices}}
+                        <li {{action "selectProject" project}}>{{project.name}}</li>
+                      {{/each}}
+                    </ul>
+                  </div>
+                {{/if}}
+              </div>
               <span class="time">
                 {{input value=entry.startedAtHourOneWay focus-out="startedAtHourChanged"}}
               </span>
@@ -56,7 +67,7 @@
           <li class="entry">
             <div {{action "editEntry"}}>
               <span class="title">{{entry.title}}</span>
-              <span class="project">{{entry.projectName}}</span>
+              <span class="project">{{entry.projectNameOneWay}}</span>
               <span class="duration">{{entry.duration}}</span>
               <span class="time-range">
                 {{entry.startedAtHour}}

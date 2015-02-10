@@ -30,7 +30,6 @@ body
       position: absolute
       color: #4A4A4A
       font-size: 1.1em
-      float: left
       width: 187px
       background-color: #E1E1E1
       +border-radius(4px, 4px)
@@ -129,11 +128,32 @@ body
       .title
         width: 658px
         margin: 1px 1px 5px -11px
+
       .project
-        width: 130px
-        margin-left: 5px
+        width: 105px
+        margin-left: 0
         margin-right: 5px
-        text-align:center
+        input
+          width: 100%
+          text-align: center
+          margin-bottom: 0
+        .project-choices
+          position: absolute
+          color: #4A4A4A
+          font-size: 1.1em
+          width: 155px
+          background-color: #E1E1E1
+          +border-radius(4px, 4px)
+          ul
+            +no-bullets
+            padding: 0
+            margin: 5px 0
+            li
+              padding: 12px 17px
+              &:hover
+                background-color: #D1D1D1
+
+
       .time
         display: inline-block
         width: 105px
