@@ -1,6 +1,6 @@
 <section class="new-entry">
-  {{input classNames="title" placeholder="What are you working on ?" value=newEntry.title}}
-  {{input classNames="project" placeholder="Project" value=newEntry.project}}
+  {{input classNames="title" placeholder="What are you working on ?" value=newEntry.title action="startTimer"}}
+  {{input classNames="project" placeholder="Project" value=newEntry.project action="startTimer"}}
   {{input classNames="duration" disabled="disabled" value=newEntryDuration}}
   {{#if timerStarted}}
     <button class="stop-button" {{action "stopTimer"}}>Stop</button>

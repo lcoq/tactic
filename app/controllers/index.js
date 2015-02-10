@@ -12,6 +12,10 @@ export default Ember.ArrayController.extend({
 
   actions: {
     startTimer: function() {
+      if (this.get('newEntry.startedAt')) {
+        return;
+      }
+
       var startedAt = new Date();
       this.get('newEntry').set('startedAt', startedAt);
 
