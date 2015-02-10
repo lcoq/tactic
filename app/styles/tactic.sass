@@ -20,6 +20,29 @@ body
   margin: auto
 
 .new-entry
+  .project
+    display: inline-block
+    width: 18%
+    .project-input
+      width: 155px
+      margin-bottom: 0
+    .project-choices
+      position: absolute
+      color: #4A4A4A
+      font-size: 1.1em
+      float: left
+      width: 187px
+      background-color: #E1E1E1
+      +border-radius(4px, 4px)
+      ul
+        +no-bullets
+        padding: 0
+        margin: 5px 0
+        li
+          padding: 12px 17px
+          &:hover
+            background-color: #D1D1D1
+
   input
     font-size: 1.2em
     border: 1px solid #DDD
@@ -28,8 +51,6 @@ body
     margin: 40px 0
     &.title
       width: 45%
-    &.project
-      width: 18%
     &.duration
       background: #FFF
       text-align: center
@@ -69,6 +90,10 @@ body
   .entry
     padding: 14px 0
     border-bottom: 1px solid #DDD
+
+    &:hover
+      background-color: #F1F1F1
+
     .title
       display: inline-block
       width: 650px

@@ -1,6 +1,17 @@
 <section class="new-entry">
-  {{input classNames="title" placeholder="What are you working on ?" value=newEntry.title action="startTimer"}}
-  {{input classNames="project" placeholder="Project" value=newEntry.projectName action="startTimer"}}
+  {{input classNames="title" placeholder="What are you working on ?" value=newEntry.title action="startTimer" key-press="startTimer"}}
+  <div class="project">
+    {{input classNames="project-input" placeholder="Project" value=newEntryProjectName key-press="searchProjectsAndStartTimer"}}
+    {{#if projectChoices}}
+      <div class="project-choices">
+        <ul>
+          {{#each project in projectChoices}}
+            <li {{action "selectProject" project}}>{{project.name}}</li>
+          {{/each}}
+        </ul>
+      </div>
+    {{/if}}
+  </div>
   {{input classNames="duration" disabled="disabled" value=newEntryDuration}}
   {{#if timerStarted}}
     <button class="stop-button" {{action "stopTimer"}}>Stop</button>

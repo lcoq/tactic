@@ -6,6 +6,21 @@ export default Ember.ArrayController.extend({
   newEntry: null,
   newEntryDuration: '0:00:00',
 
+  // A change on `Entry#projectName` is unexpectedly sent by Ember while its value remains
+  // the same. The hack below prevents firing observers when the project name does not really
+  // change
+  latestEntryProjectName: null,
+  newEntryProjectNameChanged: function() {
+    var newProjectName = this.get('newEntry.projectName');
+    if (newProjectName !== this.get('latestEntryProjectName')) {
+      this.set('latestEntryProjectName', newProjectName);
+    }
+  }.observes('newEntry.projectName').on('init'),
+  newEntryProjectNameBinding: Ember.Binding.oneWay('latestEntryProjectName'),
+
+  projectTimer: null,
+  projectChoices: null,
+
   buildNewEntry: function() {
     this.set('newEntry', this.store.createRecord('entry'));
   },
@@ -38,6 +53,27 @@ export default Ember.ArrayController.extend({
         self.send('refresh');
         self.buildNewEntry();
       });
+    },
+    searchProjectsAndStartTimer: function() {
+      var previousTimer = this.get('projectTimer');
+      if (previousTimer) {
+        Ember.run.cancel(previousTimer);
+        this.set('projectTimer', null);
+      }
+      var timer = Ember.run.later(this, function() {
+        var projectName = this.get('newEntryProjectName');
+        var self = this;
+        this.store.find('project', { name: projectName }).then(function(projects) {
+          self.set('projectChoices', projects.toArray());
+        });
+      }, 700);
+
+      this.set('projectTimer', timer);
+      this.send('startTimer');
+    },
+    selectProject: function(project) {
+      this.set('projectChoices', null);
+      this.get('newEntry').set('project', project);
     }
   }
 });
