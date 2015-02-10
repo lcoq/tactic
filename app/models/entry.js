@@ -5,7 +5,7 @@ export default DS.Model.extend({
   title: DS.attr('string'),
   startedAt: DS.attr('date'),
   finishedAt: DS.attr('date'),
-  project: DS.attr('string'),
+  project: DS.belongsTo('Project'),
 
   duration: function() {
     var startedAt = this.get('startedAt'),
@@ -13,5 +13,9 @@ export default DS.Model.extend({
     if (startedAt && finishedAt) {
       return formatDuration(finishedAt.getTime() - startedAt.getTime());
     }
-  }.property('startedAt', 'finishedAt')
+  }.property('startedAt', 'finishedAt'),
+
+  projectName: function() {
+    return this.get('project.name');
+  }.property('project.name')
 });

@@ -1,6 +1,6 @@
 <section class="new-entry">
   {{input classNames="title" placeholder="What are you working on ?" value=newEntry.title action="startTimer"}}
-  {{input classNames="project" placeholder="Project" value=newEntry.project action="startTimer"}}
+  {{input classNames="project" placeholder="Project" value=newEntry.projectName action="startTimer"}}
   {{input classNames="duration" disabled="disabled" value=newEntryDuration}}
   {{#if timerStarted}}
     <button class="stop-button" {{action "stopTimer"}}>Stop</button>
@@ -27,7 +27,7 @@
           <li class="entry entry-edit">
             <div>
               {{input value=entry.title classNames="title"}}
-              {{input value=entry.project classNames="project"}}
+              {{input value=entry.projectName classNames="project"}}
               <span class="time">
                 {{input value=entry.startedAtHourOneWay focus-out="startedAtHourChanged"}}
               </span>
@@ -45,7 +45,7 @@
           <li class="entry">
             <div {{action "editEntry"}}>
               <span class="title">{{entry.title}}</span>
-              <span class="project">{{entry.project}}</span>
+              <span class="project">{{entry.projectName}}</span>
               <span class="duration">{{entry.duration}}</span>
               <span class="time-range">
                 {{entry.startedAtHour}}
