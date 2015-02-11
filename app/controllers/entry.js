@@ -36,7 +36,8 @@ export default Ember.ObjectController.extend({
   projectNameChanged: function() {
     var newProjectName = this.get('projectName');
     if (newProjectName !== this.get('latestProjectName')) {
-      this.set('latestProjectName', newProjectName);
+      var self = this;
+      Ember.run(function() { self.set('latestProjectName', newProjectName); });
     }
   }.observes('content.projectName').on('init'),
   projectNameOneWayBinding: Ember.Binding.oneWay('latestProjectName'),
