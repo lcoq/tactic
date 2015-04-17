@@ -18,6 +18,10 @@ export default Ember.ObjectController.extend({
   needs: 'index',
   isEditing: null,
 
+  startedAtDay: function() {
+    return moment(this.get('startedAt')).format('YYYY-MM-DD');
+  }.property('startedAt'),
+
   startedAtHour: function() {
     return moment(this.get('startedAt')).format('H:mm');
   }.property('startedAt'),
@@ -58,10 +62,7 @@ export default Ember.ObjectController.extend({
       this.set('isEditing', false);
     },
     deleteEntry: function() {
-      var index = this.get('controllers.index');
-      this.get('content').destroyRecord().then(function() {
-        index.send('refresh');
-      });
+      this.get('content').destroyRecord();
     },
     startedAtHourChanged: function(string) {
       var split = string.split(':');

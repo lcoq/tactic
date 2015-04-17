@@ -4,22 +4,49 @@ module.exports = function(app) {
 
   entriesRouter.get('/', function(req, res) {
     res.send({
-      'entries': []
+      'entries': [
+        {
+          id: 4,
+          title: 'International Shipping: Staging deploy',
+          startedAt: '2015-02-11T11:23:00Z',
+          finishedAt: '2015-02-11T12:59:00Z',
+          project: 2
+        }, {
+          id: 3,
+          title: 'International Shipping: Optional zip code',
+          startedAt: '2015-02-09T10:01:00Z',
+          finishedAt: '2015-02-09T10:47:00Z',
+          project: 2
+        }, {
+          id: 2,
+          title: 'International Shipping: Optional state',
+          startedAt: '2015-02-08T15:43:00Z',
+          finishedAt: '2015-02-08T17:37:00Z',
+          project: 2
+        }, {
+          id: 1,
+          title: 'Generic import',
+          startedAt: '2015-01-01T09:03:00Z',
+          finishedAt: '2015-01-01T12:18:00Z',
+          project: 1
+        }
+      ],
+      'projects': [
+        {
+          id: 1,
+          name: 'Heroshop'
+        }, {
+          id: 2,
+          name: 'Vitarock'
+        }
+      ]
     });
   });
 
   entriesRouter.post('/', function(req, res) {
     res.status(201).send({
       'entry': {
-        id: 5,
-        title: 'Time entry creation',
-        startedAt: new Date('2015-02-10T09:14:23Z'),
-        finishedAt: new Date('2015-02-10T13:27:18Z'),
-        project: 1
-      },
-      'project': {
-        id: 3,
-        name: 'Tactic'
+        id: Math.floor(Math.random() * 1000000)
       }
     });
   });

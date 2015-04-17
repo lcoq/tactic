@@ -1,10 +1,19 @@
 import Ember from 'ember';
 import formatDuration from '../utils/format-duration';
+import groupBy from '../utils/group-by';
+import EntryList from '../models/entry-list';
 
 export default Ember.ArrayController.extend({
+  itemController: 'entry',
+  sortProperties: ['startedAtTime'],
+  sortAscending: false,
+
+  entriesByDay: groupBy('@this', 'startedAtDay', EntryList),
+
   timerStarted: Ember.computed.notEmpty('newEntry.startedAt'),
   newEntry: null,
   newEntryDuration: '0:00:00',
+
 
   // A change on `Entry#projectName` is unexpectedly sent by Ember while its value remains
   // the same. The hack below prevents firing observers when the project name does not really
@@ -50,7 +59,6 @@ export default Ember.ArrayController.extend({
           self = this;
       newEntry.set('finishedAt', new Date());
       newEntry.save().then(function() {
-        self.send('refresh');
         self.buildNewEntry();
       });
     },

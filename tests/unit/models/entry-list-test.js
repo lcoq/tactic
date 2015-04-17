@@ -3,42 +3,58 @@ import {
   test
 } from 'ember-qunit';
 import Ember from 'ember';
+import EntryList from 'tactic/models/entry-list';
 
-moduleForModel('entry-list', 'EntryList', {
-  // Specify the other units that are required for this test.
-  needs: [ 'model:Entry', 'model:Project' ]
-});
+function subject() {
+  return EntryList.create({
+    content: [
+      Ember.Object.create({
+        startedAt: new Date('2015-02-11T09:22:33Z'),
+        finishedAt: new Date('2015-02-11T12:37:29Z')
+      }),
+      Ember.Object.create({
+        startedAt: new Date('2015-01-10T08:00:00Z'),
+        finishedAt: new Date('2015-01-10T12:00:00Z')
+      })
+    ],
+    key: '2015-02-11'
+  });
+}
+
+module('EntryList');
 
 test('it exists', function() {
-  var model = this.subject();
-  // var store = this.store();
+  var model = subject();
   ok(!!model);
 });
 
-
-test('it is recent', function() {
-  var model = this.subject();
-  ok(model.get('isRecent'));
+test('is is today', function() {
+  var model = subject(), now = new Date();
+  Ember.run(function() {
+    model.set('content', [ Ember.Object.create({ startedAt: now }) ]);
+  });
+  ok(model.get('isToday'));
 });
 
-test('is is not recent 7 days ago', function() {
-  var model = this.subject(),
-      oldDate = new Date().getTime() - 3600 * 24 * 8;
-  Ember.run(function() { model.set('date', new Date(oldDate)); });
-  ok(!model.get('isRecent'));
+test('it is not today', function() {
+  var model = subject();
+  ok(!model.get('isToday'));
+});
+
+test('is in current week', function() {
+  var model = subject(), now = new Date();
+  Ember.run(function() {
+    model.set('content', [ Ember.Object.create({ startedAt: now }) ]);
+  });
+  ok(model.get('inCurrentWeek'));
+});
+
+test('it is not in current week', function() {
+  var model = subject();
+  ok(!model.get('inCurrentWeek'));
 });
 
 test('it duration is the sum of its entries durations', function() {
-  var model = this.subject();
-  Ember.run(function() {
-    model.get('entries').createRecord({
-      startedAt: new Date('2015-01-02T11:00:00Z'),
-      finishedAt: new Date('2015-01-02T12:23:00Z')
-    });
-    model.get('entries').createRecord({
-      startedAt: new Date('2015-01-01T09:00:00Z'),
-      finishedAt: new Date('2015-01-01T12:00:00Z')
-    });
-  });
-  equal(model.get('duration'), '4:23:00');
+  var model = subject();
+  equal(model.get('duration'), '7:14:56');
 });

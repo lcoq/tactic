@@ -21,19 +21,21 @@
 </section>
 
 <section class="entry-list">
-  {{#each entryList in this}}
+  {{#each entryList in entriesByDay}}
     <h2>
-      {{#if entryList.isRecent}}
-        {{ago entryList.date}}
+      {{#if entryList.isToday}}
+        Today
+      {{else}}{{#if entryList.inCurrentWeek}}
+        {{ago entryList.mostRecentDate}}
       {{else}}
         {{moment entryList.date "ll"}}
-      {{/if}}
+      {{/if}}{{/if}}
       <span class="duration">
         {{entryList.duration}}
       </span>
     </h2>
     <ul>
-      {{#each entry in entryList.entries itemController="entry"}}
+      {{#each entry in entryList}}
         {{#if entry.isEditing}}
           <li class="entry entry-edit">
             <div>
