@@ -51,14 +51,6 @@ module.exports = function(app) {
     });
   });
 
-  entriesRouter.get('/:id', function(req, res) {
-    res.send({
-      'entries': {
-        id: req.params.id
-      }
-    });
-  });
-
   entriesRouter.put('/:id', function(req, res) {
     res.send({
       'entries': {
