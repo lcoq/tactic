@@ -20,6 +20,16 @@ You will need the following things properly installed on your computer.
 * `npm install`
 * `bower install`
 
+**Ubuntu Notice**
+
+To install node packages which also install binaries (like `bower`, `ember-cli`), you may want to use :
+
+`sudo npm install -g`
+
+instead of :
+
+`npm install`
+
 ## Running / Development
 
 * `ember server`
