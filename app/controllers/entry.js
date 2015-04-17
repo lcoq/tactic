@@ -49,6 +49,9 @@ export default Ember.ObjectController.extend({
   projectTimer: null,
   projectChoices: null,
 
+  deleteEntryTimer: null,
+  isDeleting: Ember.computed.bool('deleteEntryTimer'),
+
   actions: {
     editEntry: function() {
       this.set('isEditing', true);
@@ -62,7 +65,19 @@ export default Ember.ObjectController.extend({
       this.set('isEditing', false);
     },
     deleteEntry: function() {
-      this.get('content').destroyRecord();
+      function deleteEntry() {
+        this.set('deleteEntryTimer', null);
+        this.get('content').destroyRecord();
+      }
+      var deleteEntryTimer = Ember.run.later(this, deleteEntry, 5000);
+      this.set('deleteEntryTimer', deleteEntryTimer);
+    },
+    cancelDeleteEntry: function() {
+      var deleteTimer = this.get('deleteEntryTimer');
+      if (deleteTimer) {
+        Ember.run.cancel(deleteTimer);
+        this.set('deleteEntryTimer', null);
+      }
     },
     startedAtHourChanged: function(string) {
       var split = string.split(':');
