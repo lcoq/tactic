@@ -2,6 +2,7 @@ require 'test_helper'
 
 describe 'Routes Acceptance Test' do
   it '/api/entries' do
+    assert_routing({ path: '/api/entries', method: :post }, controller: 'entries', action: 'create')
     assert_routing '/api/entries', controller: 'entries', action: 'index'
   end
   it '/api/projects' do

@@ -21,6 +21,29 @@ describe EntriesController do
       result['projects'].map { |r| r['id'] }.to_set.must_equal projects.map(&:id).to_set
     end
   end
+  describe 'create' do
+    let(:attributes) {
+      {
+        title: "My entry",
+        started_at: '2015-04-18T18:27:48.712Z',
+        finished_at: '2015-04-18T22:46:30.892Z'
+      }
+    }
+    it 'ok' do
+      post :create, entry: attributes
+      assert_response :success
+      result['entry'].wont_be_nil
+      result['entry']['title'].must_equal attributes[:title]
+    end
+    it 'creates entry' do
+      post :create, entry: attributes
+      Entry.find_by(title: attributes[:title]).tap do |e|
+        e.wont_be_nil
+        e.started_at.utc.to_s.must_equal '2015-04-18 18:27:48 UTC'
+        e.finished_at.utc.to_s.must_equal '2015-04-18 22:46:30 UTC'
+      end
+    end
+  end
 
   def result
     JSON.parse(response.body)
