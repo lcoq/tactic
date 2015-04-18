@@ -33,6 +33,11 @@ export default Ember.ObjectController.extend({
   startedAtHourOneWayBinding: Ember.Binding.oneWay('startedAtHour'),
   finishedAtHourOneWayBinding: Ember.Binding.oneWay('finishedAtHour'),
 
+  initialProject: null,
+  setInitialProject: function() {
+    this.set('initialProject', this.get('project'));
+  }.on('init'),
+
   // A change on `Entry#projectName` is unexpectedly sent by Ember while its value remains
   // the same. The hack below prevents firing observers when the project name does not really
   // change
@@ -77,8 +82,10 @@ export default Ember.ObjectController.extend({
     saveEntry: function() {
       this.get('content').save();
       this.set('isEditing', false);
+      this.setInitialProject();
     },
     restoreEntry: function() {
+      this.set('project', this.get('initialProject'));
       this.get('content').rollback();
       this.set('isEditing', false);
     },
