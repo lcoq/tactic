@@ -6,6 +6,12 @@ class EntriesController < ApplicationController
     render json: { entry: serialize_entry(entry) }
   end
 
+  def update
+    entry = Entry.find(params[:id])
+    entry.update_attributes!(entry_params)
+    render json: { entry: serialize_entry(entry) }
+  end
+
   def index
     entries = Entry.all
     projects = entries_projects(entries)
