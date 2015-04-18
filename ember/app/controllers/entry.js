@@ -48,6 +48,14 @@ export default Ember.ObjectController.extend({
     this.set('initialStartedAtDay', startedAtDay);
   }.on('init'),
 
+  initialStartedAtTime: null,
+  setInitialStartedAtTime: function() {
+    var startedAt = this.get('startedAt');
+    if (startedAt) {
+      this.set('initialStartedAtTime', startedAt.getTime());
+    }
+  }.on('init'),
+
   startedAtDay: function() {
     return moment(this.get('startedAt')).format('YYYY-MM-DD');
   }.property('startedAt'),
@@ -141,6 +149,7 @@ export default Ember.ObjectController.extend({
     saveEntry: function() {
       this.get('content').save();
       this.setInitialStartedAtDay();
+      this.setInitialStartedAtTime();
       this.setInitialProject();
       this.setProperties({
         isEditing: false,
