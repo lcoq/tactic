@@ -64,6 +64,9 @@ export default Ember.ObjectController.extend({
   isDeleting: Ember.computed.bool('deleteEntryTimer'),
   editFocus: null,
 
+  saveEntryTimer: null,
+  saveScheduled: Ember.computed.bool('saveEntryTimer'),
+
   _findProjects: function() {
     var projectName = this.get('projectName');
     var self = this;
@@ -79,10 +82,28 @@ export default Ember.ObjectController.extend({
         isEditing: true
       });
     },
+    scheduleSaveEntry: function() {
+      var saveTimer = Ember.run.later(this, function() { this.send('saveEntry'); }, 3000);
+      this.setProperties({
+        isEditing: false,
+        saveEntryTimer: saveTimer
+      });
+    },
+    cancelSaveEntry: function() {
+      var saveTimer = this.get('saveEntryTimer');
+      if (saveTimer) {
+        Ember.run.cancel(saveTimer);
+        this.set('saveEntryTimer', null);
+        this.send('restoreEntry');
+      }
+    },
     saveEntry: function() {
       this.get('content').save();
-      this.set('isEditing', false);
       this.setInitialProject();
+      this.setProperties({
+        isEditing: false,
+        saveEntryTimer: null
+      });
     },
     restoreEntry: function() {
       this.set('project', this.get('initialProject'));
