@@ -1,16 +1,41 @@
 class EntriesController < ApplicationController
 
   def index
-    serialized_entries = Entry.all.map do |entry|
+    entries = Entry.all
+    projects = entries_projects(entries)
+
+    render json: {
+      entries: serialize_entries(entries),
+      projects: serialize_projects(projects)
+    }.to_json
+  end
+
+  private
+
+  def entries_projects(entries)
+    entries.each_with_object(Set.new) do |entry, set|
+      set << entry.project if entry.project
+    end
+  end
+
+  def serialize_entries(entries)
+    entries.map do |entry|
       {
         id: entry.id,
         title: entry.title,
         startedAt: entry.started_at,
         finishedAt: entry.finished_at,
-        project: nil
+        project: entry.project_id
       }
     end
-    render json: { entries: serialized_entries }.to_json
   end
 
+  def serialize_projects(projects)
+    projects.map do |project|
+      {
+        id: project.id,
+        name: project.name
+      }
+    end
+  end
 end
