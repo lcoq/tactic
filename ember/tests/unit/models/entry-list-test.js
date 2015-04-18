@@ -13,8 +13,8 @@ function subject() {
         finishedAt: new Date('2015-02-11T12:37:29Z')
       }),
       Ember.Object.create({
-        startedAt: new Date('2015-01-10T08:00:00Z'),
-        finishedAt: new Date('2015-01-10T12:00:00Z')
+        startedAt: new Date('2015-02-11T08:00:00Z'),
+        finishedAt: new Date('2015-02-11T12:00:00Z')
       })
     ],
     key: '2015-02-11'
@@ -31,7 +31,7 @@ test('it exists', function() {
 test('is is today', function() {
   var model = subject(), now = new Date();
   Ember.run(function() {
-    model.set('content', [ Ember.Object.create({ startedAt: now }) ]);
+    model.set('key', [ now.getFullYear(), now.getMonth()+1, now.getDate() ].join('-'));
   });
   ok(model.get('isToday'));
 });
@@ -44,7 +44,7 @@ test('it is not today', function() {
 test('is in current week', function() {
   var model = subject(), now = new Date();
   Ember.run(function() {
-    model.set('content', [ Ember.Object.create({ startedAt: now }) ]);
+    model.set('key', [ now.getFullYear(), now.getMonth()+1, now.getDate() ].join('-'));
   });
   ok(model.get('inCurrentWeek'));
 });
@@ -52,9 +52,4 @@ test('is in current week', function() {
 test('it is not in current week', function() {
   var model = subject();
   ok(!model.get('inCurrentWeek'));
-});
-
-test('it duration is the sum of its entries durations', function() {
-  var model = subject();
-  equal(model.get('duration'), '7:14:56');
 });

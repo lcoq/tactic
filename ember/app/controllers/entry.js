@@ -1,64 +1,37 @@
 import Ember from 'ember';
-import moment from 'moment';
-
-function updateHoursAndMinutes(date, hours, minutes) {
-  var newDate = new Date(
-    date.getFullYear(),
-    date.getMonth(),
-    date.getDate(),
-    hours,
-    minutes
-  );
-  if (!isNaN(newDate.getTime())) {
-    return newDate;
-  }
-}
+import EntryForm from '../models/entry-form';
 
 export default Ember.ObjectController.extend({
   needs: 'index',
+
   isEditing: null,
 
-  startedAtDay: function() {
-    return moment(this.get('startedAt')).format('YYYY-MM-DD');
-  }.property('startedAt'),
+  differedStartedAtDay: function() { return this.get('startedAtDay'); }.property(),
+  differedStartedAtTime: function() { return this.get('startedAtTime'); }.property(),
+  differedFinishedAtTime: function() { return this.get('finishedAtTime'); }.property(),
 
-  startedAtHour: function() {
-    return moment(this.get('startedAt')).format('H:mm');
-  }.property('startedAt'),
-
-  finishedAtHour: function() {
-    return moment(this.get('finishedAt')).format('H:mm');
-  }.property('finishedAt'),
-
-  startedAtHourOneWayBinding: Ember.Binding.oneWay('startedAtHour'),
-  finishedAtHourOneWayBinding: Ember.Binding.oneWay('finishedAtHour'),
-
+  // Used to restore an entry as ember-data does not restore
+  // belongs_to relationship
   initialProject: null,
   setInitialProject: function() {
     this.set('initialProject', this.get('project'));
   }.on('init'),
 
-  // A change on `Entry#projectName` is unexpectedly sent by Ember while its value remains
-  // the same. The hack below prevents firing observers when the project name does not really
-  // change
-  entryProjectName: null,
-  entryProjectNameChanged: function() {
-    var newProjectName = this.get('content.projectName');
-    if (newProjectName !== this.get('entryProjectName')) {
-      var self = this;
-      Ember.run(function() { self.set('entryProjectName', newProjectName); });
-    }
-  }.observes('content.projectName').on('init'),
+  startedAtTime: function() {
+    return this.get('startedAt').getTime();
+  }.property('startedAt'),
 
-  projectNameBinding: Ember.Binding.oneWay('entryProjectName'),
-  projectNameEnteredChanged: function() {
-    if (this.get('projectName') !== this.get('entryProjectName')) {
+  finishedAtTime: function() {
+    return this.get('finishedAt').getTime();
+  }.property('finishedAt'),
+
+  projectNameChanged: function() {
+    if (this.get('editForm.projectNameHasChanged')) {
       this.send('searchProjects');
     }
-  }.observes('projectName'),
+  }.observes('editForm.projectNameHasChanged'),
 
   projectTimer: null,
-  projectChoices: null,
 
   deleteEntryTimer: null,
   isDeleting: Ember.computed.bool('deleteEntryTimer'),
@@ -68,15 +41,17 @@ export default Ember.ObjectController.extend({
   saveScheduled: Ember.computed.bool('saveEntryTimer'),
 
   _findProjects: function() {
-    var projectName = this.get('projectName');
-    var self = this;
-    this.store.find('project', { name: projectName }).then(function(projects) {
-      self.set('projectChoices', projects.toArray());
+    var editForm = this.get('editForm');
+    this.store.find('project', { name: editForm.get('projectName') }).then(function(projects) {
+      editForm.set('projectChoices', projects.toArray());
     });
   },
 
   actions: {
     editEntry: function(editFocus) {
+      if (this.get('controllers.index.hasEdit')) {
+        return;
+      }
       var saveTimer = this.get('saveEntryTimer');
       if (saveTimer) {
         Ember.run.cancel(saveTimer);
@@ -88,15 +63,20 @@ export default Ember.ObjectController.extend({
       }
       this.setProperties({
         editFocus: editFocus,
+        editForm: EntryForm.create({ entry: this.get('content') }),
         isEditing: true
       });
     },
     scheduleSaveEntry: function() {
-      var saveTimer = Ember.run.later(this, function() { this.send('saveEntry'); }, 3000);
-      this.setProperties({
-        isEditing: false,
-        saveEntryTimer: saveTimer
-      });
+      var editForm = this.get('editForm');
+      if (editForm.get('isValid')) {
+        editForm.update();
+        var saveTimer = Ember.run.later(this, function() { this.send('saveEntry'); }, 3000);
+        this.setProperties({
+          isEditing: false,
+          saveEntryTimer: saveTimer
+        });
+      }
     },
     cancelSaveEntry: function() {
       var saveTimer = this.get('saveEntryTimer');
@@ -109,7 +89,11 @@ export default Ember.ObjectController.extend({
     saveEntry: function() {
       this.get('content').save();
       this.setInitialProject();
+      this.notifyPropertyChange('differedStartedAtDay');
+      this.notifyPropertyChange('differedStartedAtTime');
+      this.notifyPropertyChange('differedFinishedAtTime');
       this.setProperties({
+        editForm: null,
         isEditing: false,
         saveEntryTimer: null
       });
@@ -134,35 +118,21 @@ export default Ember.ObjectController.extend({
         this.set('deleteEntryTimer', null);
       }
     },
-    startedAtHourChanged: function(string) {
-      var split = string.split(':');
-      var newValue = updateHoursAndMinutes(this.get('startedAt'), split[0], split[1]);
-      this.get('content').set('startedAt', newValue);
-    },
-    finishedAtHourChanged: function(string) {
-      var split = string.split(':');
-      var newValue = updateHoursAndMinutes(this.get('finishedAt'), split[0], split[1]);
-      this.get('content').set('finishedAt', newValue);
-    },
     searchProjects: function() {
       var previousTimer = this.get('projectTimer');
       if (previousTimer) {
         Ember.run.cancel(previousTimer);
         this.set('projectTimer', null);
       }
-      if (!Ember.isEmpty(this.get('projectName'))) {
+      if (this.get('editForm.projectNameIsEmpty')) {
+        this.send('selectProject', null);
+      } else {
         var timer = Ember.run.later(this, this._findProjects, 700);
         this.set('projectTimer', timer);
-      } else {
-        this.send('selectProject', null);
       }
     },
     selectProject: function(project) {
-      this.setProperties({
-        projectChoices: null,
-        project: project
-      });
-      this.notifyPropertyChange('entryProjectName');
+      this.get('editForm').selectProject(project);
     }
   }
 });
