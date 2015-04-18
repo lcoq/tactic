@@ -36,25 +36,43 @@ export default Ember.ObjectController.extend({
   // A change on `Entry#projectName` is unexpectedly sent by Ember while its value remains
   // the same. The hack below prevents firing observers when the project name does not really
   // change
-  latestProjectName: null,
-  projectNameChanged: function() {
-    var newProjectName = this.get('projectName');
-    if (newProjectName !== this.get('latestProjectName')) {
+  entryProjectName: null,
+  entryProjectNameChanged: function() {
+    var newProjectName = this.get('content.projectName');
+    if (newProjectName !== this.get('entryProjectName')) {
       var self = this;
-      Ember.run(function() { self.set('latestProjectName', newProjectName); });
+      Ember.run(function() { self.set('entryProjectName', newProjectName); });
     }
   }.observes('content.projectName').on('init'),
-  projectNameOneWayBinding: Ember.Binding.oneWay('latestProjectName'),
+
+  projectNameBinding: Ember.Binding.oneWay('entryProjectName'),
+  projectNameEnteredChanged: function() {
+    if (this.get('projectName') !== this.get('entryProjectName')) {
+      this.send('searchProjects');
+    }
+  }.observes('projectName'),
 
   projectTimer: null,
   projectChoices: null,
 
   deleteEntryTimer: null,
   isDeleting: Ember.computed.bool('deleteEntryTimer'),
+  editFocus: null,
+
+  _findProjects: function() {
+    var projectName = this.get('projectName');
+    var self = this;
+    this.store.find('project', { name: projectName }).then(function(projects) {
+      self.set('projectChoices', projects.toArray());
+    });
+  },
 
   actions: {
-    editEntry: function() {
-      this.set('isEditing', true);
+    editEntry: function(editFocus) {
+      this.setProperties({
+        editFocus: editFocus,
+        isEditing: true
+      });
     },
     saveEntry: function() {
       this.get('content').save();
@@ -95,18 +113,19 @@ export default Ember.ObjectController.extend({
         Ember.run.cancel(previousTimer);
         this.set('projectTimer', null);
       }
-      var timer = Ember.run.later(this, function() {
-        var projectName = this.get('projectName');
-        var self = this;
-        this.store.find('project', { name: projectName }).then(function(projects) {
-          self.set('projectChoices', projects.toArray());
-        });
-      }, 700);
-      this.set('projectTimer', timer);
+      if (!Ember.isEmpty(this.get('projectName'))) {
+        var timer = Ember.run.later(this, this._findProjects, 700);
+        this.set('projectTimer', timer);
+      } else {
+        this.send('selectProject', null);
+      }
     },
     selectProject: function(project) {
-      this.set('projectChoices', null);
-      this.set('project', project);
+      this.setProperties({
+        projectChoices: null,
+        project: project
+      });
+      this.notifyPropertyChange('entryProjectName');
     }
   }
 });

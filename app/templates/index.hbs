@@ -1,7 +1,7 @@
 <section class="new-entry">
   {{input classNames="title" placeholder="What are you working on ?" value=newEntry.title action="startTimer" key-press="startTimer"}}
   <div class="project">
-    {{input classNames="project-input" placeholder="Project" value=newEntryProjectName key-press="searchProjectsAndStartTimer"}}
+    {{select-on-focus-input classNames="project-input" placeholder="Project" value=newEntryProjectName}}
     {{#if projectChoices}}
       <div class="project-choices">
         <ul>
@@ -37,41 +37,20 @@
     <ul>
       {{#each entry in entryList}}
         {{#if entry.isEditing}}
-          <li class="entry entry-edit">
-            <div>
-              {{input value=entry.title classNames="title"}}
-              <div class="project">
-                {{input value=entry.projectNameOneWay key-press="searchProjects"}}
-                {{#if entry.projectChoices}}
-                  <div class="project-choices">
-                    <ul>
-                      {{#each project in entry.projectChoices}}
-                        <li {{action "selectProject" project}}>{{project.name}}</li>
-                      {{/each}}
-                    </ul>
-                  </div>
-                {{/if}}
-              </div>
-              <span class="time">
-                {{input value=entry.startedAtHourOneWay focus-out="startedAtHourChanged"}}
-              </span>
-              to
-              <span class="time">
-                {{input value=entry.finishedAtHourOneWay focus-out="finishedAtHourChanged"}}
-              </span>
-            </div>
-            <div class="actions">
-              <a href="" {{action "saveEntry"}}>Save</a>
-              <a href="" {{action "restoreEntry"}}>Cancel</a>
-            </div>
-          </li>
+          {{view "entry-edit" context=entry focusOn=entry.editFocus}}
         {{else}}
           <li {{bind-attr class=":entry entry.isDeleting:deleting" }}>
-            <div {{action "editEntry"}}>
-              <span class="title">{{entry.title}}</span>
-              <span class="project">{{entry.projectNameOneWay}}</span>
-              <span class="duration">{{entry.duration}}</span>
-              <span class="time-range">
+            <div>
+              <span class="title" {{action "editEntry" "title"}}>{{entry.title}}</span>
+              <span class="project" {{action "editEntry" "project"}}>
+                {{#if entry.projectName}}
+                  {{entry.projectName}}
+                {{else}}
+                  <i>No project</i>
+                {{/if}}
+              </span>
+              <span class="duration" {{action "editEntry" "time"}}>{{entry.duration}}</span>
+              <span class="time-range"  {{action "editEntry" "time"}}>
                 {{entry.startedAtHour}}
                 -
                 {{entry.finishedAtHour}}
