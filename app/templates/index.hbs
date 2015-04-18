@@ -1,7 +1,7 @@
 <section class="new-entry">
   {{input classNames="title" placeholder="What are you working on ?" value=newEntry.title action="startTimer" key-press="startTimer"}}
   <div class="project">
-    {{select-on-focus-input classNames="project-input" placeholder="Project" value=newEntryProjectName key-press="searchProjectsAndStartTimer"}}
+    {{select-on-focus-input classNames="project-input" placeholder="Project" value=newEntryProjectName}}
     {{#if projectChoices}}
       <div class="project-choices">
         <ul>

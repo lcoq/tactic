@@ -18,6 +18,7 @@ export default Ember.ArrayController.extend({
   // A change on `Entry#projectName` is unexpectedly sent by Ember while its value remains
   // the same. The hack below prevents firing observers when the project name does not really
   // change
+
   latestEntryProjectName: null,
   newEntryProjectNameChanged: function() {
     var newProjectName = this.get('newEntry.projectName');
@@ -25,13 +26,27 @@ export default Ember.ArrayController.extend({
       this.set('latestEntryProjectName', newProjectName);
     }
   }.observes('newEntry.projectName').on('init'),
+
   newEntryProjectNameBinding: Ember.Binding.oneWay('latestEntryProjectName'),
+  runSearchProjects: function() {
+    if (this.get('newEntryProjectName') !== this.get('latestEntryProjectName')) {
+      this.send('searchProjectsAndStartTimer');
+    }
+  }.observes('newEntryProjectName'),
 
   projectTimer: null,
   projectChoices: null,
 
   buildNewEntry: function() {
     this.set('newEntry', this.store.createRecord('entry'));
+  },
+
+  _findProjects: function() {
+    var projectName = this.get('newEntryProjectName');
+    var self = this;
+    this.store.find('project', { name: projectName }).then(function(projects) {
+      self.set('projectChoices', projects.toArray());
+    });
   },
 
   actions: {
@@ -68,20 +83,18 @@ export default Ember.ArrayController.extend({
         Ember.run.cancel(previousTimer);
         this.set('projectTimer', null);
       }
-      var timer = Ember.run.later(this, function() {
-        var projectName = this.get('newEntryProjectName');
-        var self = this;
-        this.store.find('project', { name: projectName }).then(function(projects) {
-          self.set('projectChoices', projects.toArray());
-        });
-      }, 700);
-
-      this.set('projectTimer', timer);
+      if (!Ember.isEmpty(this.get('newEntryProjectName'))) {
+        var timer = Ember.run.later(this, this._findProjects, 700);
+        this.set('projectTimer', timer);
+      } else {
+        this.send('selectProject', null);
+      }
       this.send('startTimer');
     },
     selectProject: function(project) {
       this.set('projectChoices', null);
       this.get('newEntry').set('project', project);
+      this.notifyPropertyChange('latestEntryProjectName');
     }
   }
 });
