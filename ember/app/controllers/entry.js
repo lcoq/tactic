@@ -14,6 +14,18 @@ function updateHoursAndMinutes(date, hours, minutes) {
   }
 }
 
+
+function updateDateProperty(object, propertyName, newValue) {
+  var initialValue = object.get(propertyName);
+  if (!initialValue || !newValue) {
+    if (initialValue !== newValue) {
+      object.set(propertyName, newValue);
+    }
+  } else if (initialValue.getTime() !== newValue.getTime()) {
+    object.set(propertyName, newValue);
+  }
+}
+
 export default Ember.ObjectController.extend({
   needs: 'index',
   isEditing: null,
@@ -137,12 +149,12 @@ export default Ember.ObjectController.extend({
     startedAtHourChanged: function(string) {
       var split = string.split(':');
       var newValue = updateHoursAndMinutes(this.get('startedAt'), split[0], split[1]);
-      this.get('content').set('startedAt', newValue);
+      updateDateProperty(this.get('content'), 'startedAt', newValue);
     },
     finishedAtHourChanged: function(string) {
       var split = string.split(':');
       var newValue = updateHoursAndMinutes(this.get('finishedAt'), split[0], split[1]);
-      this.get('content').set('finishedAt', newValue);
+      updateDateProperty(this.get('content'), 'finishedAt', newValue);
     },
     searchProjects: function() {
       var previousTimer = this.get('projectTimer');
