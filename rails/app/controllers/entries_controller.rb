@@ -25,7 +25,7 @@ class EntriesController < ApplicationController
   private
 
   def entry_params
-    params.require(:entry).permit(:title, :started_at, :finished_at)
+    params.require(:entry).permit(:title, :started_at, :finished_at, :project_id)
   end
 
   def entries_projects(entries)
