@@ -26,7 +26,8 @@ describe EntriesController do
       {
         title: "My entry",
         started_at: '2015-04-18T18:27:48.712Z',
-        finished_at: '2015-04-18T22:46:30.892Z'
+        finished_at: '2015-04-18T22:46:30.892Z',
+        project_id: create(:project).id
       }
     }
     it 'ok' do
@@ -41,6 +42,7 @@ describe EntriesController do
         e.wont_be_nil
         e.started_at.utc.to_s.must_equal '2015-04-18 18:27:48 UTC'
         e.finished_at.utc.to_s.must_equal '2015-04-18 22:46:30 UTC'
+        e.project_id.must_equal attributes[:project_id]
       end
     end
   end
@@ -50,7 +52,8 @@ describe EntriesController do
       {
         title: "New title",
         started_at: '2015-04-18T18:27:48.712Z',
-        finished_at: '2015-04-18T22:46:30.892Z'
+        finished_at: '2015-04-18T22:46:30.892Z',
+        project_id: create(:project).id
       }
     }
     it 'ok' do
@@ -65,6 +68,7 @@ describe EntriesController do
         e.wont_be_nil
         e.started_at.utc.to_s.must_equal '2015-04-18 18:27:48 UTC'
         e.finished_at.utc.to_s.must_equal '2015-04-18 22:46:30 UTC'
+        e.project_id.must_equal attributes[:project_id]
       end
     end
   end
