@@ -1,0 +1,26 @@
+<div>
+  {{input value=title classNames="title focus-title"}}
+  <div class="project">
+    {{select-on-focus-input value=projectNameOneWay key-press="searchProjects" classNames="focus-project"}}
+    {{#if projectChoices}}
+      <div class="project-choices">
+        <ul>
+          {{#each project in projectChoices}}
+            <li {{action "selectProject" project}}>{{project.name}}</li>
+          {{/each}}
+        </ul>
+      </div>
+    {{/if}}
+  </div>
+  <span class="time">
+    {{input value=startedAtHourOneWay focus-out="startedAtHourChanged" classNames="focus-time"}}
+  </span>
+  to
+  <span class="time">
+    {{input value=finishedAtHourOneWay focus-out="finishedAtHourChanged"}}
+  </span>
+</div>
+<div class="actions">
+  <a href="" {{action "saveEntry"}}>Save</a>
+  <a href="" {{action "restoreEntry"}}>Cancel</a>
+</div>
