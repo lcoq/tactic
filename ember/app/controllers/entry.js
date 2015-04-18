@@ -14,6 +14,18 @@ function updateHoursAndMinutes(date, hours, minutes) {
   }
 }
 
+function updateYearMonthAndDay(date, year, month, day) {
+  var newDate = new Date(
+    year,
+    parseInt(month) - 1,
+    day,
+    date.getHours(),
+    date.getMinutes()
+  );
+  if (!isNaN(newDate.getTime())) {
+    return newDate;
+  }
+}
 
 function updateDateProperty(object, propertyName, newValue) {
   var initialValue = object.get(propertyName);
@@ -30,9 +42,17 @@ export default Ember.ObjectController.extend({
   needs: 'index',
   isEditing: null,
 
+  initialStartedAtDay: null,
+  setInitialStartedAtDay: function() {
+    var startedAtDay = moment(this.get('startedAt')).format('YYYY-MM-DD');
+    this.set('initialStartedAtDay', startedAtDay);
+  }.on('init'),
+
   startedAtDay: function() {
     return moment(this.get('startedAt')).format('YYYY-MM-DD');
   }.property('startedAt'),
+
+  startedAtDayOneWayBinding: Ember.Binding.oneWay('startedAtDay'),
 
   startedAtHour: function() {
     return moment(this.get('startedAt')).format('H:mm');
@@ -120,6 +140,7 @@ export default Ember.ObjectController.extend({
     },
     saveEntry: function() {
       this.get('content').save();
+      this.setInitialStartedAtDay();
       this.setInitialProject();
       this.setProperties({
         isEditing: false,
@@ -145,6 +166,13 @@ export default Ember.ObjectController.extend({
         Ember.run.cancel(deleteTimer);
         this.set('deleteEntryTimer', null);
       }
+    },
+    dayChanged: function(string) {
+      var split = string.split('-');
+      var newStartedAt = updateYearMonthAndDay(this.get('startedAt'), split[0], split[1], split[2]),
+          newFinishedAt = updateYearMonthAndDay(this.get('finishedAt'), split[0], split[1], split[2]);
+      updateDateProperty(this.get('content'), 'startedAt', newStartedAt);
+      updateDateProperty(this.get('content'), 'finishedAt', newFinishedAt);
     },
     startedAtHourChanged: function(string) {
       var split = string.split(':');
