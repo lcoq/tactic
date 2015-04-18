@@ -1,5 +1,4 @@
 class EntriesController < ApplicationController
-
   def create
     entry = Entry.new(entry_params)
     entry.save!
@@ -20,6 +19,12 @@ class EntriesController < ApplicationController
       entries: serialize_entries(entries),
       projects: serialize_projects(projects)
     }.to_json
+  end
+
+  def destroy
+    entry = Entry.find(params[:id])
+    entry.destroy
+    render nothing: true
   end
 
   private

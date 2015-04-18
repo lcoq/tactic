@@ -72,6 +72,18 @@ describe EntriesController do
       end
     end
   end
+  describe 'destroy' do
+    let(:entry) { create(:entry) }
+    it 'ok' do
+      delete :destroy, id: entry.id
+      assert_response :success
+      response.body.must_be_empty
+    end
+    it 'destroys the entry' do
+      delete :destroy, id: entry.id
+      assert_raises(ActiveRecord::RecordNotFound) { entry.reload }
+    end
+  end
 
   def result
     JSON.parse(response.body)
