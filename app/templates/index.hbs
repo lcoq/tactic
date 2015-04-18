@@ -42,7 +42,7 @@
           <li {{bind-attr class=":entry entry.isDeleting:deleting" }}>
             <div>
               <span class="title" {{action "editEntry" "title"}}>{{entry.title}}</span>
-              <span class="project" {{action "editEntry" "project"}}>{{entry.projectNameOneWay}}</span>
+              <span class="project" {{action "editEntry" "project"}}>{{entry.projectName}}</span>
               <span class="duration" {{action "editEntry" "time"}}>{{entry.duration}}</span>
               <span class="time-range"  {{action "editEntry" "time"}}>
                 {{entry.startedAtHour}}
