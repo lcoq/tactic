@@ -77,6 +77,15 @@ export default Ember.ObjectController.extend({
 
   actions: {
     editEntry: function(editFocus) {
+      var saveTimer = this.get('saveEntryTimer');
+      if (saveTimer) {
+        Ember.run.cancel(saveTimer);
+        this.set('saveEntryTimer', null);
+      }
+      var deleteTimer = this.get('deleteEntryTimer');
+      if (deleteTimer) {
+        this.send('cancelDeleteEntry');
+      }
       this.setProperties({
         editFocus: editFocus,
         isEditing: true
