@@ -28,9 +28,7 @@ export default function (dependentKey, property, groupClass) {
     },
 
     removedItem: function(array, item) {
-      var key   = get(item, property),
-      group = array.findBy('key', key);
-
+      var group = array.find(function(g) { return g.contains(item); });
       if (!group) {
         return;
       }
