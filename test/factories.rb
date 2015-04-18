@@ -1,4 +1,8 @@
 FactoryGirl.define do
+  factory :project do
+    sequence(:name) { |n| "Project #{n}" }
+  end
+
   factory :entry do
     sequence(:title) { |n| "Entry #{n}" }
     sequence(:started_at) { |n| 10.days.ago.to_datetime + 1.hour + rand(60).minutes }
