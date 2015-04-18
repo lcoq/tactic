@@ -1,25 +1,13 @@
-class Entry
-  def self.all
-    [
-        {
-          id: 3,
-          title: 'Adrien a commence tactic',
-          startedAt: '2015-02-11T11:23:00Z',
-          finishedAt: '2015-02-11T12:59:00Z',
-          project: nil
-        }, {
-          id: 2,
-          title: 'Et il entend Louis ronfler au-dessus pendant ce temps',
-          startedAt: '2015-02-09T10:01:00Z',
-          finishedAt: '2015-02-09T10:47:00Z',
-          project: nil
-        }, {
-          id: 1,
-          title: 'First entry',
-          startedAt: '2015-02-11T11:23:00Z',
-          finishedAt: '2015-02-11T12:59:00Z',
-          project: nil
-        }
-    ]
+class Entry < ActiveRecord::Base
+  validates :started_at, presence: true
+  validates :finished_at, presence: true
+  validate :finish_after_start
+
+  private
+
+  def finish_after_start
+    if started_at && finished_at && started_at > finished_at
+      errors.add(:finished_at, "cannot finish before the start")
+    end
   end
 end
