@@ -100,7 +100,7 @@ export default Ember.ObjectController.extend({
         this.set('projectTimer', null);
       }
       var timer = Ember.run.later(this, function() {
-        var projectName = this.get('projectName');
+        var projectName = this.get('projectNameOneWay');
         var self = this;
         this.store.find('project', { name: projectName }).then(function(projects) {
           self.set('projectChoices', projects.toArray());
