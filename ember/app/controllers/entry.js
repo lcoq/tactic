@@ -39,7 +39,6 @@ function updateDateProperty(object, propertyName, newValue) {
 }
 
 export default Ember.ObjectController.extend({
-  needs: 'index',
   isEditing: null,
 
   initialStartedAtDay: null,
