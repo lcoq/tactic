@@ -12,6 +12,9 @@
       </div>
     {{/if}}
   </div>
+  <span class="date">
+    {{input value=startedAtDayOneWay focus-out="dayChanged"}}
+  </span>
   <span class="time">
     {{input value=startedAtHourOneWay focus-out="startedAtHourChanged" classNames="focus-time"}}
   </span>
