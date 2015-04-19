@@ -5,15 +5,16 @@ import EntryList from '../models/entry-list';
 
 export default Ember.ArrayController.extend({
   itemController: 'entry',
-  sortProperties: ['startedAtTime'],
-  sortAscending: false,
 
-  entriesByDay: groupBy('@this', 'startedAtDay', EntryList),
+  entriesByDay: groupBy('@this.@each.differedStartedAtDay', 'differedStartedAtDay', EntryList),
 
   timerStarted: Ember.computed.notEmpty('newEntry.startedAt'),
   newEntry: null,
   newEntryDuration: '0:00:00',
 
+  hasEdit: function() {
+    return this.someProperty('isEditing');
+  }.property('@each.isEditing'),
 
   // A change on `Entry#projectName` is unexpectedly sent by Ember while its value remains
   // the same. The hack below prevents firing observers when the project name does not really

@@ -1,5 +1,6 @@
 import DS from 'ember-data';
 import formatDuration from '../utils/format-duration';
+import moment from 'moment';
 
 export default DS.Model.extend({
   title: DS.attr('string'),
@@ -17,5 +18,17 @@ export default DS.Model.extend({
 
   projectName: function() {
     return this.get('project.name');
-  }.property('project.name')
+  }.property('project.name'),
+
+  startedAtDay: function() {
+    return moment(this.get('startedAt')).format('YYYY-MM-DD');
+  }.property('startedAt'),
+
+  startedAtHour: function() {
+    return moment(this.get('startedAt')).format('H:mm');
+  }.property('startedAt'),
+
+  finishedAtHour: function() {
+    return moment(this.get('finishedAt')).format('H:mm');
+  }.property('finishedAt')
 });

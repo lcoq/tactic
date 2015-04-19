@@ -12,12 +12,15 @@
       </div>
     {{/if}}
   </div>
+  <span class="date">
+    {{input value=startedAtDay classBinding="dayIsValid::error"}}
+  </span>
   <span class="time">
-    {{input value=startedAtHourOneWay focus-out="startedAtHourChanged" classNames="focus-time"}}
+    {{input value=startedAtHour classBinding=":focus-time startedAtIsValid::error"}}
   </span>
   to
   <span class="time">
-    {{input value=finishedAtHourOneWay focus-out="finishedAtHourChanged"}}
+    {{input value=finishedAtHour classBinding="finishedAtIsValid::error"}}
   </span>
 </div>
 <div class="actions">
