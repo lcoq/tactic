@@ -13,14 +13,14 @@
     {{/if}}
   </div>
   <span class="date">
-    {{input value=startedAtDayOneWay focus-out="dayChanged"}}
+    {{input value=startedAtDayOneWay focus-out="dayChanged" classBinding="dayIsError:error"}}
   </span>
   <span class="time">
-    {{input value=startedAtHourOneWay focus-out="startedAtHourChanged" classNames="focus-time"}}
+    {{input value=startedAtHourOneWay focus-out="startedAtHourChanged" classBinding=":focus-time startedAtIsError:error"}}
   </span>
   to
   <span class="time">
-    {{input value=finishedAtHourOneWay focus-out="finishedAtHourChanged"}}
+    {{input value=finishedAtHourOneWay focus-out="finishedAtHourChanged" classBinding="finishedAtIsError:error"}}
   </span>
 </div>
 <div class="actions">

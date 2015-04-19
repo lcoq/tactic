@@ -39,6 +39,8 @@ function updateDateProperty(object, propertyName, newValue) {
 }
 
 export default Ember.ObjectController.extend({
+  needs: 'index',
+
   isEditing: null,
 
   initialStartedAt: null,
@@ -64,6 +66,13 @@ export default Ember.ObjectController.extend({
   }.property('startedAt'),
 
   startedAtDayOneWayBinding: Ember.Binding.oneWay('startedAtDay'),
+
+  dayIsError: false,
+  startedAtIsError: false,
+  finishedAtIsError: false,
+  isValid: function() {
+    return !this.get('dayIsError') && !this.get('startedAtIsError') && !this.get('finishedAtIsError');
+  }.property('dayIsError', 'startedAtIsError', 'finishedAtIsError'),
 
   startedAtHour: function() {
     return moment(this.get('startedAt')).format('H:mm');
@@ -120,6 +129,9 @@ export default Ember.ObjectController.extend({
 
   actions: {
     editEntry: function(editFocus) {
+      if (this.get('controllers.index.hasEdit')) {
+        return;
+      }
       var saveTimer = this.get('saveEntryTimer');
       if (saveTimer) {
         Ember.run.cancel(saveTimer);
@@ -135,11 +147,13 @@ export default Ember.ObjectController.extend({
       });
     },
     scheduleSaveEntry: function() {
-      var saveTimer = Ember.run.later(this, function() { this.send('saveEntry'); }, 3000);
-      this.setProperties({
-        isEditing: false,
-        saveEntryTimer: saveTimer
-      });
+      if (this.get('isValid')) {
+        var saveTimer = Ember.run.later(this, function() { this.send('saveEntry'); }, 3000);
+        this.setProperties({
+          isEditing: false,
+          saveEntryTimer: saveTimer
+        });
+      }
     },
     cancelSaveEntry: function() {
       var saveTimer = this.get('saveEntryTimer');
@@ -183,18 +197,34 @@ export default Ember.ObjectController.extend({
       var split = string.split('-');
       var newStartedAt = updateYearMonthAndDay(this.get('startedAt'), split[0], split[1], split[2]),
           newFinishedAt = updateYearMonthAndDay(this.get('finishedAt'), split[0], split[1], split[2]);
-      updateDateProperty(this.get('content'), 'startedAt', newStartedAt);
-      updateDateProperty(this.get('content'), 'finishedAt', newFinishedAt);
+      if (newStartedAt && newFinishedAt) {
+        this.set('dayIsError', false);
+        var entry = this.get('content');
+        updateDateProperty(entry, 'startedAt', newStartedAt);
+        updateDateProperty(entry, 'finishedAt', newFinishedAt);
+      } else {
+        this.set('dayIsError', true);
+      }
     },
     startedAtHourChanged: function(string) {
       var split = string.split(':');
       var newValue = updateHoursAndMinutes(this.get('startedAt'), split[0], split[1]);
-      updateDateProperty(this.get('content'), 'startedAt', newValue);
+      if (newValue) {
+        this.set('startedAtIsError', false);
+        updateDateProperty(this.get('content'), 'startedAt', newValue);
+      } else {
+        this.set('startedAtIsError', true);
+      }
     },
     finishedAtHourChanged: function(string) {
       var split = string.split(':');
       var newValue = updateHoursAndMinutes(this.get('finishedAt'), split[0], split[1]);
-      updateDateProperty(this.get('content'), 'finishedAt', newValue);
+      if (newValue) {
+        this.set('finishedAtIsError', false);
+        updateDateProperty(this.get('content'), 'finishedAt', newValue);
+      } else {
+        this.set('finishedAtIsError', true);
+      }
     },
     searchProjects: function() {
       var previousTimer = this.get('projectTimer');

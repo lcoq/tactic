@@ -12,6 +12,9 @@ export default Ember.ArrayController.extend({
   newEntry: null,
   newEntryDuration: '0:00:00',
 
+  hasEdit: function() {
+    return this.someProperty('isEditing');
+  }.property('@each.isEditing'),
 
   // A change on `Entry#projectName` is unexpectedly sent by Ember while its value remains
   // the same. The hack below prevents firing observers when the project name does not really
