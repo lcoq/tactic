@@ -41,7 +41,13 @@
         {{else}}
           <li {{bind-attr class=":entry entry.isDeleting:deleting" }}>
             <div>
-              <span class="title" {{action "editEntry" "title"}}>{{entry.title}}</span>
+              <span class="title" {{action "editEntry" "title"}}>
+                {{#if entry.title}}
+                  {{entry.title}}
+                {{else}}
+                  <i>No title</i>
+                {{/if}}
+              </span>
               <span class="project" {{action "editEntry" "project"}}>
                 {{#if entry.projectName}}
                   {{entry.projectName}}
@@ -57,14 +63,17 @@
               </span>
             </div>
             <div class="actions">
-              <a href="" {{action "editEntry"}}>Edit</a>
-              {{#if entry.isDeleting}}
+              {{#if entry.saveScheduled}}
+                <a href="" {{action "cancelSaveEntry"}}>
+                  Restore changes
+                </a>
+              {{else}} {{#if entry.isDeleting}}
                 <a href="" {{action "cancelDeleteEntry"}}>
                   Cancel deletion
                 </a>
               {{else}}
                 <a href="" {{action "deleteEntry"}}>Delete</a>
-              {{/if}}
+              {{/if}}{{/if}}
             </div>
           </li>
         {{/if}}

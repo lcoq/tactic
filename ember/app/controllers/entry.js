@@ -33,6 +33,11 @@ export default Ember.ObjectController.extend({
   startedAtHourOneWayBinding: Ember.Binding.oneWay('startedAtHour'),
   finishedAtHourOneWayBinding: Ember.Binding.oneWay('finishedAtHour'),
 
+  initialProject: null,
+  setInitialProject: function() {
+    this.set('initialProject', this.get('project'));
+  }.on('init'),
+
   // A change on `Entry#projectName` is unexpectedly sent by Ember while its value remains
   // the same. The hack below prevents firing observers when the project name does not really
   // change
@@ -59,6 +64,9 @@ export default Ember.ObjectController.extend({
   isDeleting: Ember.computed.bool('deleteEntryTimer'),
   editFocus: null,
 
+  saveEntryTimer: null,
+  saveScheduled: Ember.computed.bool('saveEntryTimer'),
+
   _findProjects: function() {
     var projectName = this.get('projectName');
     var self = this;
@@ -69,16 +77,45 @@ export default Ember.ObjectController.extend({
 
   actions: {
     editEntry: function(editFocus) {
+      var saveTimer = this.get('saveEntryTimer');
+      if (saveTimer) {
+        Ember.run.cancel(saveTimer);
+        this.set('saveEntryTimer', null);
+      }
+      var deleteTimer = this.get('deleteEntryTimer');
+      if (deleteTimer) {
+        this.send('cancelDeleteEntry');
+      }
       this.setProperties({
         editFocus: editFocus,
         isEditing: true
       });
     },
+    scheduleSaveEntry: function() {
+      var saveTimer = Ember.run.later(this, function() { this.send('saveEntry'); }, 3000);
+      this.setProperties({
+        isEditing: false,
+        saveEntryTimer: saveTimer
+      });
+    },
+    cancelSaveEntry: function() {
+      var saveTimer = this.get('saveEntryTimer');
+      if (saveTimer) {
+        Ember.run.cancel(saveTimer);
+        this.set('saveEntryTimer', null);
+        this.send('restoreEntry');
+      }
+    },
     saveEntry: function() {
       this.get('content').save();
-      this.set('isEditing', false);
+      this.setInitialProject();
+      this.setProperties({
+        isEditing: false,
+        saveEntryTimer: null
+      });
     },
     restoreEntry: function() {
+      this.set('project', this.get('initialProject'));
       this.get('content').rollback();
       this.set('isEditing', false);
     },
