@@ -27,6 +27,7 @@ guard(:minitest, all_on_start: false) do
   watch(%r{^test/(.+)_test\.rb$})
   watch(%r{^test/test_helper\.rb$})        { 'test' }
   watch(%r{^app/models/(.+)\.rb$})         { |m| "test/models/#{m[1]}_test.rb" }
+  watch(%r{^app/serializers/(.+)\.rb$})    { |m| "test/serializers/#{m[1]}_test.rb" }
   watch(%r{^app/controllers/(.+)\.rb$})    { |m| "test/controllers/#{m[1]}_test.rb" }
   watch(%r{^config/routes\.rb$})           { |m| "test/routes" }
   watch(%r{^lib/(.+)\.rb$})                { |m| "test/lib/#{m[1]}_test.rb" }
