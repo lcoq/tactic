@@ -1,0 +1,26 @@
+development:
+  adapter: postgresql
+  encoding: unicode
+  database: tactic_development
+  min_messages: warning
+  pool: 5
+  username: login
+  password: pass
+
+test:
+  adapter: postgresql
+  encoding: unicode
+  database: tactic_test
+  min_messages: error
+  pool: 5
+  username: login
+  password: pass
+
+production:
+  adapter: postgresql
+  encoding: unicode
+  database: tactic_development
+  min_messages: warning
+  pool: 5
+  username: login
+  password: pass
