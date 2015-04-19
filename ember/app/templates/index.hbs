@@ -26,7 +26,7 @@
       {{#if entryList.isToday}}
         Today
       {{else}}{{#if entryList.inCurrentWeek}}
-        {{ago entryList.mostRecentDate}}
+        {{ago entryList.date}}
       {{else}}
         {{moment entryList.date "ll"}}
       {{/if}}{{/if}}
@@ -37,7 +37,7 @@
     <ul>
       {{#each entry in entryList}}
         {{#if entry.isEditing}}
-          {{view "entry-edit" context=entry focusOn=entry.editFocus}}
+          {{view "entry-edit" context=entry.editForm focusOn=entry.editFocus}}
         {{else}}
           <li {{bind-attr class=":entry entry.isDeleting:deleting" }}>
             <div>
@@ -49,8 +49,8 @@
                 {{/if}}
               </span>
               <span class="project" {{action "editEntry" "project"}}>
-                {{#if entry.projectName}}
-                  {{entry.projectName}}
+                {{#if entry.project.name}}
+                  {{entry.project.name}}
                 {{else}}
                   <i>No project</i>
                 {{/if}}

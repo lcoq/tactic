@@ -1,116 +1,37 @@
 import Ember from 'ember';
-import moment from 'moment';
-
-function updateHoursAndMinutes(date, hours, minutes) {
-  var newDate = new Date(
-    date.getFullYear(),
-    date.getMonth(),
-    date.getDate(),
-    hours,
-    minutes
-  );
-  if (!isNaN(newDate.getTime())) {
-    return newDate;
-  }
-}
-
-function updateYearMonthAndDay(date, year, month, day) {
-  var newDate = new Date(
-    year,
-    parseInt(month) - 1,
-    day,
-    date.getHours(),
-    date.getMinutes()
-  );
-  if (!isNaN(newDate.getTime())) {
-    return newDate;
-  }
-}
-
-function updateDateProperty(object, propertyName, newValue) {
-  var initialValue = object.get(propertyName);
-  if (!initialValue || !newValue) {
-    if (initialValue !== newValue) {
-      object.set(propertyName, newValue);
-    }
-  } else if (initialValue.getTime() !== newValue.getTime()) {
-    object.set(propertyName, newValue);
-  }
-}
+import EntryForm from '../models/entry-form';
 
 export default Ember.ObjectController.extend({
   needs: 'index',
 
   isEditing: null,
 
-  initialStartedAt: null,
-  setInitialStartedAt: function() {
-    this.set('initialStartedAt', this.get('startedAt'));
-  }.on('init'),
+  differedStartedAtDay: function() { return this.get('startedAtDay'); }.property(),
+  differedStartedAtTime: function() { return this.get('startedAtTime'); }.property(),
+  differedFinishedAtTime: function() { return this.get('finishedAtTime'); }.property(),
 
-  initialStartedAtDay: null,
-  setInitialStartedAtDay: function() {
-    this.set('initialStartedAtDay', this.get('startedAtDay'));
-  }.on('init'),
-
-  initialStartedAtTime: null,
-  setInitialStartedAtTime: function() {
-    var startedAt = this.get('startedAt');
-    if (startedAt) {
-      this.set('initialStartedAtTime', startedAt.getTime());
-    }
-  }.on('init'),
-
-  startedAtDay: function() {
-    return moment(this.get('startedAt')).format('YYYY-MM-DD');
-  }.property('startedAt'),
-
-  startedAtDayOneWayBinding: Ember.Binding.oneWay('startedAtDay'),
-
-  dayIsError: false,
-  startedAtIsError: false,
-  finishedAtIsError: false,
-  isValid: function() {
-    return !this.get('dayIsError') && !this.get('startedAtIsError') && !this.get('finishedAtIsError');
-  }.property('dayIsError', 'startedAtIsError', 'finishedAtIsError'),
-
-  startedAtHour: function() {
-    return moment(this.get('startedAt')).format('H:mm');
-  }.property('startedAt'),
-
-  finishedAtHour: function() {
-    return moment(this.get('finishedAt')).format('H:mm');
-  }.property('finishedAt'),
-
-  startedAtHourOneWayBinding: Ember.Binding.oneWay('startedAtHour'),
-  finishedAtHourOneWayBinding: Ember.Binding.oneWay('finishedAtHour'),
-
+  // Used to restore an entry as ember-data does not restore
+  // belongs_to relationship
   initialProject: null,
   setInitialProject: function() {
     this.set('initialProject', this.get('project'));
   }.on('init'),
 
-  // A change on `Entry#projectName` is unexpectedly sent by Ember while its value remains
-  // the same. The hack below prevents firing observers when the project name does not really
-  // change
-  entryProjectName: null,
-  entryProjectNameChanged: function() {
-    var newProjectName = this.get('content.projectName');
-    if (newProjectName !== this.get('entryProjectName')) {
-      var self = this;
-      Ember.run(function() { self.set('entryProjectName', newProjectName); });
-    }
-  }.observes('content.projectName').on('init'),
+  startedAtTime: function() {
+    return this.get('startedAt').getTime();
+  }.property('startedAt'),
 
-  projectNameBinding: Ember.Binding.oneWay('entryProjectName'),
-  projectNameEnteredChanged: function() {
-    if (this.get('projectName') !== this.get('entryProjectName')) {
+  finishedAtTime: function() {
+    return this.get('finishedAt').getTime();
+  }.property('finishedAt'),
+
+  projectNameChanged: function() {
+    if (this.get('editForm.projectNameHasChanged')) {
       this.send('searchProjects');
     }
-  }.observes('projectName'),
+  }.observes('editForm.projectNameHasChanged'),
 
   projectTimer: null,
-  projectChoices: null,
 
   deleteEntryTimer: null,
   isDeleting: Ember.computed.bool('deleteEntryTimer'),
@@ -120,10 +41,9 @@ export default Ember.ObjectController.extend({
   saveScheduled: Ember.computed.bool('saveEntryTimer'),
 
   _findProjects: function() {
-    var projectName = this.get('projectName');
-    var self = this;
-    this.store.find('project', { name: projectName }).then(function(projects) {
-      self.set('projectChoices', projects.toArray());
+    var editForm = this.get('editForm');
+    this.store.find('project', { name: editForm.get('projectName') }).then(function(projects) {
+      editForm.set('projectChoices', projects.toArray());
     });
   },
 
@@ -143,11 +63,14 @@ export default Ember.ObjectController.extend({
       }
       this.setProperties({
         editFocus: editFocus,
+        editForm: EntryForm.create({ entry: this.get('content') }),
         isEditing: true
       });
     },
     scheduleSaveEntry: function() {
-      if (this.get('isValid')) {
+      var editForm = this.get('editForm');
+      if (editForm.get('isValid')) {
+        editForm.update();
         var saveTimer = Ember.run.later(this, function() { this.send('saveEntry'); }, 3000);
         this.setProperties({
           isEditing: false,
@@ -165,10 +88,12 @@ export default Ember.ObjectController.extend({
     },
     saveEntry: function() {
       this.get('content').save();
-      this.setInitialStartedAtDay();
-      this.setInitialStartedAtTime();
       this.setInitialProject();
+      this.notifyPropertyChange('differedStartedAtDay');
+      this.notifyPropertyChange('differedStartedAtTime');
+      this.notifyPropertyChange('differedFinishedAtTime');
       this.setProperties({
+        editForm: null,
         isEditing: false,
         saveEntryTimer: null
       });
@@ -193,58 +118,21 @@ export default Ember.ObjectController.extend({
         this.set('deleteEntryTimer', null);
       }
     },
-    dayChanged: function(string) {
-      var split = string.split('-');
-      var newStartedAt = updateYearMonthAndDay(this.get('startedAt'), split[0], split[1], split[2]),
-          newFinishedAt = updateYearMonthAndDay(this.get('finishedAt'), split[0], split[1], split[2]);
-      if (newStartedAt && newFinishedAt) {
-        this.set('dayIsError', false);
-        var entry = this.get('content');
-        updateDateProperty(entry, 'startedAt', newStartedAt);
-        updateDateProperty(entry, 'finishedAt', newFinishedAt);
-      } else {
-        this.set('dayIsError', true);
-      }
-    },
-    startedAtHourChanged: function(string) {
-      var split = string.split(':');
-      var newValue = updateHoursAndMinutes(this.get('startedAt'), split[0], split[1]);
-      if (newValue) {
-        this.set('startedAtIsError', false);
-        updateDateProperty(this.get('content'), 'startedAt', newValue);
-      } else {
-        this.set('startedAtIsError', true);
-      }
-    },
-    finishedAtHourChanged: function(string) {
-      var split = string.split(':');
-      var newValue = updateHoursAndMinutes(this.get('finishedAt'), split[0], split[1]);
-      if (newValue) {
-        this.set('finishedAtIsError', false);
-        updateDateProperty(this.get('content'), 'finishedAt', newValue);
-      } else {
-        this.set('finishedAtIsError', true);
-      }
-    },
     searchProjects: function() {
       var previousTimer = this.get('projectTimer');
       if (previousTimer) {
         Ember.run.cancel(previousTimer);
         this.set('projectTimer', null);
       }
-      if (!Ember.isEmpty(this.get('projectName'))) {
+      if (this.get('editForm.projectNameIsEmpty')) {
+        this.send('selectProject', null);
+      } else {
         var timer = Ember.run.later(this, this._findProjects, 700);
         this.set('projectTimer', timer);
-      } else {
-        this.send('selectProject', null);
       }
     },
     selectProject: function(project) {
-      this.setProperties({
-        projectChoices: null,
-        project: project
-      });
-      this.notifyPropertyChange('entryProjectName');
+      this.get('editForm').selectProject(project);
     }
   }
 });
