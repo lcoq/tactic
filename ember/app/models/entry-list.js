@@ -20,7 +20,7 @@ export default Ember.ArrayProxy.extend(Ember.SortableMixin, {
   },
 
   mostRecentDate: function() {
-    return this.get('content').mapProperty('startedAt').sort().get('firstObject');
+    return this.get('content').mapProperty('initialStartedAt').sort().get('firstObject');
   }.property('content.@each.startedAt'),
 
   duration: function() {

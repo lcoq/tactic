@@ -41,10 +41,14 @@ function updateDateProperty(object, propertyName, newValue) {
 export default Ember.ObjectController.extend({
   isEditing: null,
 
+  initialStartedAt: null,
+  setInitialStartedAt: function() {
+    this.set('initialStartedAt', this.get('startedAt'));
+  }.on('init'),
+
   initialStartedAtDay: null,
   setInitialStartedAtDay: function() {
-    var startedAtDay = moment(this.get('startedAt')).format('YYYY-MM-DD');
-    this.set('initialStartedAtDay', startedAtDay);
+    this.set('initialStartedAtDay', this.get('startedAtDay'));
   }.on('init'),
 
   initialStartedAtTime: null,
