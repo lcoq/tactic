@@ -26,9 +26,9 @@
       {{#if entryList.isToday}}
         Today
       {{else}}{{#if entryList.inCurrentWeek}}
-        {{ago entryList.date}}
+        {{ago entryList.time}}
       {{else}}
-        {{moment entryList.date "ll"}}
+        {{moment entryList.time "ll"}}
       {{/if}}{{/if}}
       <span class="duration">
         {{entryList.duration}}

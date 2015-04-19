@@ -19,6 +19,10 @@ export default Ember.ArrayProxy.extend(Ember.SortableMixin, {
     return date < otherDate;
   },
 
+  time: function() {
+    return this.get('content.lastObject.startedAt');
+  }.property('content.lastObject.startedAt'),
+
   duration: function() {
     var startedAt, finishedAt, durationInMs;
 
