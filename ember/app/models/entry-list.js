@@ -5,12 +5,12 @@ import moment from 'moment';
 export default Ember.ArrayProxy.extend(Ember.SortableMixin, {
   content: null,
   key: null,
-  sortProperties: ['initialStartedAtTime'],
+  sortProperties: ['differedStartedAtTime'],
   sortAscending: false,
 
   date: function() {
-    var key = this.get('key');
-    return new Date(key);
+    var split = this.get('key').split('-');
+    return new Date(split[0], parseInt(split[1])-1, split[2]);
   }.property('key'),
 
   isBefore: function(otherEntryList) {
@@ -19,32 +19,31 @@ export default Ember.ArrayProxy.extend(Ember.SortableMixin, {
     return date < otherDate;
   },
 
-  mostRecentDate: function() {
-    return this.get('content').mapProperty('initialStartedAt').sort().get('firstObject');
-  }.property('content.@each.startedAt'),
+  time: function() {
+    return this.get('content.lastObject.startedAt');
+  }.property('content.lastObject.startedAt'),
 
   duration: function() {
     var startedAt, finishedAt, durationInMs;
 
     durationInMs = this.get('content').reduce(function(duration, entry) {
-      finishedAt = entry.get('finishedAt');
-      startedAt = entry.get('startedAt');
+      finishedAt = entry.get('differedFinishedAtTime');
+      startedAt = entry.get('differedStartedAtTime');
       if (finishedAt && startedAt) {
-        return duration + finishedAt.getTime() - startedAt.getTime();
+        return duration + finishedAt - startedAt;
       } else {
         return duration;
       }
     }, 0);
     return formatDuration(durationInMs);
-  }.property('content.@each.startedAt', 'content.@each.finishedAt'),
+  }.property('content.@each.differedStartedAtTime', 'content.@each.differedFinishedAtTime'),
 
   isToday: function() {
-    var mostRecentDate = this.get('mostRecentDate');
-    return moment(mostRecentDate).format('YYYY-MM-DD') === moment().format('YYYY-MM-DD');
-  }.property('mostRecentDate'),
+    return moment(this.get('date')).format('YYYY-MM-DD') === moment().format('YYYY-MM-DD');
+  }.property('date'),
 
   inCurrentWeek: function() {
-    var mostRecentDate = this.get('mostRecentDate'), now = new Date();
-   return (now.getTime() - mostRecentDate.getTime()) < 1000 * 3600 * 24 * 7;
-  }.property('mostRecentDate')
+    var date = this.get('date'), now = new Date();
+   return (now.getTime() - date.getTime()) < 1000 * 3600 * 24 * 7;
+  }.property('date')
 });
