@@ -5,7 +5,7 @@ import moment from 'moment';
 export default Ember.ArrayProxy.extend(Ember.SortableMixin, {
   content: null,
   key: null,
-  sortProperties: ['startedAt'],
+  sortProperties: ['initialStartedAtTime'],
   sortAscending: false,
 
   date: function() {

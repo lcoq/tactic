@@ -5,10 +5,8 @@ import EntryList from '../models/entry-list';
 
 export default Ember.ArrayController.extend({
   itemController: 'entry',
-  sortProperties: ['startedAtTime'],
-  sortAscending: false,
 
-  entriesByDay: groupBy('@this', 'startedAtDay', EntryList),
+  entriesByDay: groupBy('@this.@each.initialStartedAtDay', 'initialStartedAtDay', EntryList),
 
   timerStarted: Ember.computed.notEmpty('newEntry.startedAt'),
   newEntry: null,
