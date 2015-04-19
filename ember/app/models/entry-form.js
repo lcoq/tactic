@@ -47,10 +47,15 @@ export default Ember.Object.extend({
     return moment(this.get('startedAtHour'), 'HH:mm').isValid();
   }.property('startedAtHour'),
 
-  finishedAtIsValid: function() {
+  finishedAtHourIsValid: function() {
     return moment(this.get('finishedAtHour'), 'HH:mm').isValid();
   }.property('finishedAtHour'),
 
+  startedAtIsBeforeFinishedAt: function() {
+    return this.get('startedAt').getTime() <= this.get('finishedAt').getTime();
+  }.property('startedAt', 'finishedAt'),
+
+  finishedAtIsValid: Ember.computed.and('finishedAtHourIsValid', 'startedAtIsBeforeFinishedAt'),
   isValid: Ember.computed.and('dayIsValid', 'startedAtIsValid', 'finishedAtIsValid'),
 
   projectChoices: null,
