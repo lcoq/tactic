@@ -22,7 +22,7 @@
 
 <section class="entry-list">
   {{#each entryList in entriesByDay}}
-    <h2>
+    <h2 {{bind-attr title=entryList.key}}>
       {{#if entryList.isToday}}
         Today
       {{else}}{{#if entryList.inCurrentWeek}}
@@ -31,7 +31,7 @@
         {{moment entryList.time "ll"}}
       {{/if}}{{/if}}
       <span class="duration">
-        {{entryList.duration}}
+        {{format-duration entryList.duration}}
       </span>
     </h2>
     <ul>
@@ -55,7 +55,7 @@
                   <i>No project</i>
                 {{/if}}
               </span>
-              <span class="duration" {{action "editEntry" "time"}}>{{entry.duration}}</span>
+              <span class="duration" {{action "editEntry" "time"}}>{{format-duration entry.duration}}</span>
               <span class="time-range"  {{action "editEntry" "time"}}>
                 {{entry.startedAtHour}}
                 -

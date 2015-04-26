@@ -16,23 +16,14 @@ test('it exists', function() {
 });
 
 test('duration exists', function() {
-  var model = this.subject();
+  var model = this.subject(),
+      startedAt = new Date('2015-01-01T11:00:00Z'),
+      finishedAt = new Date('2015-01-01T13:24:37Z');
   Ember.run(function() {
     model.setProperties({
-      startedAt: new Date('2015-01-01T11:00:00Z'),
-      finishedAt: new Date('2015-01-01T13:24:37Z')
+      startedAt: startedAt,
+      finishedAt: finishedAt
     });
   });
-  equal(model.get('duration'), '2:24:37', 'The duration is properly formatted');
-});
-
-test('duration minutes and seconds have 2 numbers', function() {
-  var model = this.subject();
-  Ember.run(function() {
-    model.setProperties({
-      startedAt: new Date('2015-01-01T11:00:00Z'),
-      finishedAt: new Date('2015-01-01T13:00:00Z')
-    });
-  });
-  equal(model.get('duration'), '2:00:00');
+  equal(model.get('duration'), (finishedAt.getTime() - startedAt.getTime()), 'The duration is properly computed');
 });
