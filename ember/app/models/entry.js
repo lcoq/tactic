@@ -1,5 +1,4 @@
 import DS from 'ember-data';
-import formatDuration from '../utils/format-duration';
 import moment from 'moment';
 
 export default DS.Model.extend({
@@ -12,7 +11,7 @@ export default DS.Model.extend({
     var startedAt = this.get('startedAt'),
         finishedAt = this.get('finishedAt');
     if (startedAt && finishedAt) {
-      return formatDuration(finishedAt.getTime() - startedAt.getTime());
+      return finishedAt.getTime() - startedAt.getTime();
     }
   }.property('startedAt', 'finishedAt'),
 

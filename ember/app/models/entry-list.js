@@ -1,4 +1,3 @@
-import formatDuration from '../utils/format-duration';
 import Ember from 'ember';
 import moment from 'moment';
 
@@ -24,9 +23,9 @@ export default Ember.ArrayProxy.extend(Ember.SortableMixin, {
   }.property('content.lastObject.startedAt'),
 
   duration: function() {
-    var startedAt, finishedAt, durationInMs;
+    var startedAt, finishedAt;
 
-    durationInMs = this.get('content').reduce(function(duration, entry) {
+    return this.get('content').reduce(function(duration, entry) {
       finishedAt = entry.get('differedFinishedAtTime');
       startedAt = entry.get('differedStartedAtTime');
       if (finishedAt && startedAt) {
@@ -35,7 +34,6 @@ export default Ember.ArrayProxy.extend(Ember.SortableMixin, {
         return duration;
       }
     }, 0);
-    return formatDuration(durationInMs);
   }.property('content.@each.differedStartedAtTime', 'content.@each.differedFinishedAtTime'),
 
   isToday: function() {
