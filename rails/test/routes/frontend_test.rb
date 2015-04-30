@@ -10,4 +10,7 @@ describe 'Routes Acceptance Test' do
   it '/api/projects' do
     assert_routing '/api/projects', controller: 'projects', action: 'index'
   end
+  it '/api/users' do
+    assert_routing '/api/users', controller: 'users', action: 'index'
+  end
 end

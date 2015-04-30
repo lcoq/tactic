@@ -4,6 +4,8 @@ import groupBy from '../utils/group-by';
 import EntryList from '../models/entry-list';
 
 export default Ember.ArrayController.extend({
+  needs: 'application',
+
   itemController: 'entry',
 
   entriesByDay: groupBy('@this.@each.differedStartedAtDay', 'differedStartedAtDay', EntryList),
@@ -39,7 +41,9 @@ export default Ember.ArrayController.extend({
   projectChoices: null,
 
   buildNewEntry: function() {
-    this.set('newEntry', this.store.createRecord('entry'));
+    var user = this.get('controllers.application.currentUser');
+    var newEntry = this.store.createRecord('entry', { user: user });
+    this.set('newEntry', newEntry);
   },
 
   _findProjects: function() {

@@ -5,6 +5,7 @@ export default DS.Model.extend({
   title: DS.attr('string'),
   startedAt: DS.attr('date'),
   finishedAt: DS.attr('date'),
+  user: DS.belongsTo('User'),
   project: DS.belongsTo('Project'),
 
   duration: function() {

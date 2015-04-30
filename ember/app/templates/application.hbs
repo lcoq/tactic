@@ -1,35 +1,46 @@
 <div class="header">
-  <h1>Tactic</h1>
-
-  <div class="content">
-    <section class="current-week">
-      <span class="current-week-btn">
-        This week
+  <h1>
+    <span class="brand">
+      Tactic
+    </span>
+    {{#if currentUser}}
+      <span class="user">
+        @ {{currentUser.name}}
       </span>
-      <div class="current-week-hover">
-        <ul>
-          {{#each projectsDurationInCurrentWeek}}
+    {{/if}}
+  </h1>
+
+  {{#if currentUser}}
+    <div class="content">
+      <section class="current-week">
+        <span class="current-week-btn">
+          This week
+        </span>
+        <div class="current-week-hover">
+          <ul>
+            {{#each projectsDurationInCurrentWeek}}
+              <li>
+                <span class="label">
+                  {{#if project}}
+                    {{project.name}}
+                  {{else}}
+                    <i>No project</i>
+                  {{/if}}
+                </span>
+                <span class="duration">
+                  {{format-duration duration}}
+                </span>
+              </li>
+            {{/each}}
             <li>
-              <span class="label">
-                {{#if project}}
-                  {{project.name}}
-                {{else}}
-                  <i>No project</i>
-                {{/if}}
-              </span>
-              <span class="duration">
-                {{format-duration duration}}
-              </span>
+              <span class="label total">Total</span>
+              <span class="duration">{{format-duration totalDurationInCurrentWeek}}</span>
             </li>
-          {{/each}}
-          <li>
-            <span class="label total">Total</span>
-            <span class="duration">{{format-duration totalDurationInCurrentWeek}}</span>
-          </li>
-        </ul>
-      </div>
-    </section>
-  </div>
+          </ul>
+        </div>
+      </section>
+    </div>
+  {{/if}}
 </div>
 
 <div class="content">
