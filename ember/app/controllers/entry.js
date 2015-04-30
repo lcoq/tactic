@@ -2,7 +2,7 @@ import Ember from 'ember';
 import EntryForm from '../models/entry-form';
 
 export default Ember.ObjectController.extend({
-  needs: 'index',
+  canStartEdit: Ember.computed.not('parentController.hasEdit'),
 
   isEditing: null,
 
@@ -49,7 +49,7 @@ export default Ember.ObjectController.extend({
 
   actions: {
     editEntry: function(editFocus) {
-      if (this.get('controllers.index.hasEdit')) {
+      if (!this.get('canStartEdit')) {
         return;
       }
       var saveTimer = this.get('saveEntryTimer');

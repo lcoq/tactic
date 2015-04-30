@@ -185,9 +185,6 @@ body
       text-align: center
       padding: 0 15px
       width: 100px
-    .date
-      font-size: 0.9em
-      padding: 0 35px 0 10px
 
     .time-range
       color: #666
@@ -198,6 +195,12 @@ body
       a
         color: #888
         font-size: 0.9em
+
+    &:not(.entry-edit)
+      .date
+        font-size: 0.9em
+        padding: 0 35px 0 10px
+
 
     &.entry-edit
       input
