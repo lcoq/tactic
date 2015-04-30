@@ -1,7 +1,9 @@
 class Entry < ActiveRecord::Base
+  belongs_to :user
   belongs_to :project
   validates :started_at, presence: true
   validates :finished_at, presence: true
+  validates :user, presence: true
   validate :finish_after_start
 
   private
