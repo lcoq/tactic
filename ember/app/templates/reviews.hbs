@@ -1,0 +1,39 @@
+<section class="filters">
+</section>
+
+<section class="entry-list">
+  {{#each entryList in entriesByProject}}
+    <h2>
+      {{#if entryList.project.name}}
+        {{entryList.project.name}}
+      {{else}}
+        <i>No project</i>
+      {{/if}}
+      <span class="duration">
+        {{format-duration entryList.duration}}
+      </span>
+    </h2>
+    <ul>
+      {{#each entry in entryList}}
+        <li class="entry">
+          <div>
+            <span class="title">
+              {{#if entry.title}}
+                {{entry.title}}
+              {{else}}
+                <i>No title</i>
+              {{/if}}
+            </span>
+            <span class="duration">{{format-duration entry.duration}}</span>
+            <span class="date">{{moment entry.startedAt "DD/MM"}}</span>
+            <span class="time-range"  {{action "editEntry" "time"}}>
+              {{entry.startedAtHour}}
+              -
+              {{entry.finishedAtHour}}
+            </span>
+          </div>
+        </li>
+      {{/each}}
+    </ul>
+  {{/each}}
+</section>

@@ -31,18 +31,24 @@ body
       font-size: 0.7em
       font-weight: normal
 
-  .current-week
+  .current-week, .reviews, .timer
     display: inline-block
 
-    .current-week-btn
-      background: #555
+    .section-btn
       display: inline-block
       padding: 14px 14px 12px 14px
+      margin: 0
+      font-weight: normal
+      font-size: 1em
 
-    &:hover .current-week-hover
+  .current-week
+    .section-btn
+      background: #555
+
+    &:hover .section-content
       display: block
 
-    .current-week-hover
+    .section-content
       display: none
       position: absolute
       background-color: #666
@@ -67,6 +73,20 @@ body
             float: right
             padding-left: 25px
             padding-right: 10px
+
+  .reviews, .timer
+    .section-btn
+      color: #eee
+      text-decoration: none
+
+      &.active
+        display: none
+
+
+    &:hover .section-btn
+      background: #DDD
+      color: #555
+      cursor: pointer
 
 .content
   display: block
@@ -165,6 +185,10 @@ body
       text-align: center
       padding: 0 15px
       width: 100px
+    .date
+      font-size: 0.9em
+      padding: 0 35px 0 10px
+
     .time-range
       color: #666
       font-size: 0.8em
