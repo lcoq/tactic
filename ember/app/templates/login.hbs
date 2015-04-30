@@ -1,0 +1,8 @@
+<section class="login">
+  <h1>Sign in</h1>
+  <ul>
+    {{#each user in this}}
+      <li {{action "chooseUser" user}}>@{{user.name}}</li>
+    {{/each}}
+  </ul>
+</section>

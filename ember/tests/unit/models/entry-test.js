@@ -6,7 +6,7 @@ import Ember from 'ember';
 
 moduleForModel('entry', 'Entry', {
   // Specify the other units that are required for this test.
-  needs: [ 'model:Project' ]
+  needs: [ 'model:Project', 'model:User' ]
 });
 
 test('it exists', function() {

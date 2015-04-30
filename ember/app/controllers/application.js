@@ -1,18 +1,27 @@
 import Ember from 'ember';
 import moment from 'moment';
 
+function isFilled(entry) {
+  return entry.get('startedAt') && entry.get('finishedAt');
+}
+
+function isInCurrentWeek(entry, startOfWeek) {
+  var startedAt = entry.get('startedAt');
+  var date = new Date(startedAt.getFullYear(), startedAt.getMonth(), startedAt.getDate());
+  return (date.getTime() - startOfWeek.getTime()) >= 0;
+}
+
 export default Ember.Controller.extend({
   needs: 'index',
 
-  entriesBinding: 'controllers.index.content',
+  currentUser: null,
+
   entriesInCurrentWeek: function() {
-    var entries = this.get('entries'), startOfCurrentWeek = moment().startOf('isoWeek').toDate();
-    return entries.filter(function(entry) {
-      var startedAt = entry.get('startedAt');
-      var entryDate = new Date(startedAt.getFullYear(), startedAt.getMonth(), startedAt.getDate());
-      return (entryDate.getTime() - startOfCurrentWeek.getTime()) >= 0;
+    var startOfCurrentWeek = moment().startOf('isoWeek').toDate();
+    return this.store.filter('entry', function(entry) {
+      return isFilled(entry) && isInCurrentWeek(entry, startOfCurrentWeek);
     });
-  }.property('entries.@each.startedAt'),
+  }.property(),
 
   projectsDurationInCurrentWeek: function() {
     var entries = this.get('entriesInCurrentWeek');
@@ -25,7 +34,7 @@ export default Ember.Controller.extend({
       return Ember.Object.create({ project: project, duration: duration });
     });
     return projectsDuration.sortBy('duration').reverse();
-  }.property('entries.@each.duration', 'entries.@each.project'),
+  }.property('entriesInCurrentWeek.@each.duration', 'entriesInCurrentWeek.@each.project'),
 
   totalDurationInCurrentWeek: function() {
     var totalDuration = this.get('projectsDurationInCurrentWeek').reduce(function(previous, projectDuration) {

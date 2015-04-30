@@ -34,6 +34,14 @@ describe EntrySerializer do
     subject['projects'].length.must_equal 1
     subject['projects'][0]['id'].must_equal project.id
   end
+  it 'user_id' do
+    entry.user.save!
+    subject['entry']['user_id'].must_equal entry.user.id
+  end
+  it 'does not load the user' do
+    entry.user.save!
+    subject['users'].must_be_nil
+  end
 
   def serialize(entry)
     JSON.parse(EntrySerializer.new(entry).to_json)

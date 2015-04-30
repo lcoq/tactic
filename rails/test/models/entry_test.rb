@@ -25,6 +25,10 @@ describe Entry do
     subject.finished_at = subject.started_at
     assert subject.valid?
   end
+  it 'needs user' do
+    subject.user = nil
+    refute subject.valid?
+  end
   it 'can have a project' do
     subject.project = create(:project)
     assert subject.valid?
