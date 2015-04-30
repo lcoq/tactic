@@ -13,7 +13,7 @@
     {{/if}}
   </div>
   <span class="date">
-    {{input value=startedAtDay classBinding=":focus-date dayIsValid::error"}}
+    {{input value=startedAtDay classBinding=":focus-date :datepicker dayIsValid::error"}}
   </span>
   <span class="time">
     {{input value=startedAtHour classBinding=":focus-time startedAtIsValid::error"}}

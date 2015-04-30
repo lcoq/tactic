@@ -1,6 +1,52 @@
 @import "compass/typography/lists/bullets"
 @import "compass/css3/border-radius"
 
+a
+  color: #333
+  text-decoration: none
+
+.ui-datepicker
+  padding: 20px
+  background: #EAEAEA
+  font-size: 0.85em
+
+.ui-datepicker-calendar
+  th
+    background-color: #BBB
+  td
+    padding: 8px
+    background-color: #FBFBFB
+    text-align: center
+
+    &.ui-datepicker-current-day
+      background-color: #4BC800
+      font-weight: bold
+      a
+        color: #EEE
+
+.ui-datepicker-header
+  padding: 0 10px 10px 10px
+
+.ui-datepicker-prev, .ui-datepicker-next
+  display: inline-block
+  width: 20px
+  height: 20px
+  line-height: 20px
+  text-align: center
+  cursor: pointer
+  &.ui-datepicker-prev
+    float: left
+  &.ui-datepicker-next
+    float: right
+
+.ui-datepicker-title
+  line-height: 20px
+  text-align: center
+  cursor: default
+
+.ui-datepicker-today
+  font-weight: bold
+
 body
   background-color: #FBFBFB
   margin: 0
@@ -77,7 +123,6 @@ body
   .reviews, .timer
     .section-btn
       color: #eee
-      text-decoration: none
 
       &.active
         display: none
@@ -95,6 +140,8 @@ body
   padding: 0 200px
 
 .new-entry
+  padding: 40px 0
+
   .project
     display: inline-block
     width: 18%
@@ -122,7 +169,6 @@ body
     border: 1px solid #DDD
     +border-radius(4px, 4px)
     padding: 15px
-    margin: 40px 0
     &.title
       width: 45%
     &.duration
@@ -145,6 +191,8 @@ body
     &.stop-button
       background-color: #C84B00
 
+.entry-filters
+  padding: 40px 0
 
 .entry-list
   color: #333
