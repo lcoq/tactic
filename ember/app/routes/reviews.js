@@ -9,9 +9,12 @@ export default Ember.Route.extend({
   },
 
   model: function() {
-    var userId = this.controllerFor('application').get('currentUser.id');
-    return this.store.filter('entry', function(entry) {
-      return entry.get('startedAt') && entry.get('finishedAt') && entry.get('user.id') === userId;
-    });
+    return this.controllerFor('reviews').loadEntries();
+  },
+
+  actions: {
+    refresh: function() {
+      this.refresh();
+    }
   }
 });
