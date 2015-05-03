@@ -10,6 +10,10 @@ export default  Ember.ArrayController.extend({
   itemController: 'entry',
   entriesByProject: groupBy('@this.@each.project', 'project', ProjectEntryList),
 
+  hasEdit: function() {
+    return this.someProperty('isEditing');
+  }.property('@each.isEditing'),
+
   startDate: function() {
     return moment().startOf('month').format('YYYY-MM-DD');
   }.property(),
