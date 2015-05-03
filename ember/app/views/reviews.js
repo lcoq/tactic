@@ -8,5 +8,13 @@ export default Ember.View.extend({
       prevText: '<',
       nextText: '>'
     });
-  }.on('didInsertElement')
+  }.on('didInsertElement'),
+
+  startDateChanged: function() {
+    var startDate = this.get('controller.startDate'),
+        endDateInput = this.$('.entry-filters .js-end-date');
+    if (startDate && endDateInput) {
+      endDateInput.datepicker('option', 'minDate', startDate);
+    }
+  }.observes('controller.startDate')
 });
