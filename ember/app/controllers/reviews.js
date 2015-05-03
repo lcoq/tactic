@@ -24,14 +24,11 @@ export default  Ember.ArrayController.extend({
 
   loadEntries: function() {
     var userId = this.get('currentUser.id');
-    var startDate = moment(this.get('startDate'));
-    var endDate = moment(this.get('endDate'));
-    return this.store.filter('entry', function(entry) {
-      return entry.get('startedAt') &&
-        entry.get('finishedAt') &&
-        entry.get('user.id') === userId &&
-        ( startDate.isBefore(entry.get('startedAt')) || startDate.isSame(entry.get('startedAt')) ) &&
-        ( endDate.isAfter(entry.get('finishedAt')) || endDate.isSame(entry.get('finishedAt')) );
+    var startDate = this.get('startDate');
+    var endDate = this.get('endDate');
+    return this.store.find('entry', {
+      user_id: userId,
+      date_range: [ startDate, endDate ]
     });
   }
 });

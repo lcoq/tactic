@@ -20,6 +20,24 @@ describe EntriesController do
       result['projects'].length.must_equal 2
       result['projects'].map { |r| r['id'] }.to_set.must_equal projects.map(&:id).to_set
     end
+    it 'filters by user' do
+      create_list(:entry, 3)
+      user = create(:user)
+      user_entries = create_list(:entry, 4, user: user)
+      get :index, user_id: user.id
+      result['entries'].map { |r| r['id'] }.to_set.must_equal user_entries.map(&:id).to_set
+    end
+    it 'filters by date range' do
+      create(:entry, started_at: DateTime.parse('2015-03-26 17:57:30'))
+      create(:entry, started_at: DateTime.parse('2015-03-26 20:32:12'))
+      entries = [
+        create(:entry, started_at: DateTime.parse('2015-03-27 10:12:10')),
+        create(:entry, started_at: DateTime.parse('2015-03-28 9:15:58')),
+        create(:entry, started_at: DateTime.parse('2015-03-29 19:57:34'))
+      ]
+      get :index, date_range: [ '2015-03-27', '2015-03-29' ]
+      result['entries'].map { |r| r['id'] }.to_set.must_equal entries.map(&:id).to_set
+    end
   end
   describe 'create' do
     let(:attributes) {
