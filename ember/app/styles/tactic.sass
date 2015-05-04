@@ -205,6 +205,42 @@ body
     margin: 0 8px
     width: 280px
     text-align: center
+    color: #666
+
+  .section
+    width: 33%
+    display: inline-block
+    box-sizing: border-box
+
+    h3
+      color: #666
+      font-weight: normal
+      padding: 10px
+      margin: 0
+
+    &.project-section
+      position: relative
+
+      ul.projects
+        display: none
+        position: absolute
+        list-style: none
+        background: #EAEAEA
+        box-sizing: border-box
+        width: 100%
+        margin: 0
+        padding: 10px
+
+        li label
+          padding: 15px 10px
+          display: block
+          box-sizing: border-box
+
+      &:hover
+        background: #fff
+        border: 1px solid #ddd
+        .projects
+          display: block
 
 .entry-list
   color: #333

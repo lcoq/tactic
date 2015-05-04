@@ -38,6 +38,31 @@ describe EntriesController do
       get :index, date_range: [ '2015-03-27', '2015-03-29' ]
       result['entries'].map { |r| r['id'] }.to_set.must_equal entries.map(&:id).to_set
     end
+    it 'filters by project ids' do
+      tactic = create(:project, name: 'tactic')
+      google = create(:project, name: 'google')
+      android = create(:project, name: 'android')
+      ubuntu = create(:project, name: 'ubuntu')
+
+      create_list(:entry, 2)
+      create_list(:entry, 3, project: tactic)
+      create_list(:entry, 5, project: ubuntu)
+
+      entries = [
+        create_list(:entry, 4, project: google),
+        create_list(:entry, 5, project: android)
+      ].flatten
+
+      get :index, project_ids: [ google, android ].map(&:id)
+      result['entries'].map { |r| r['id'] }.to_set.must_equal entries.map(&:id).to_set
+    end
+    it 'filters without project' do
+      create_list(:entry, 4, project: create(:project))
+      create_list(:entry, 5, project: create(:project))
+      entries = create_list(:entry, 3)
+      get :index, project: false
+      result['entries'].map { |r| r['id'] }.to_set.must_equal entries.map(&:id).to_set
+    end
   end
   describe 'create' do
     let(:attributes) {

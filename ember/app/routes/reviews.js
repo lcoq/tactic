@@ -12,6 +12,11 @@ export default Ember.Route.extend({
     return this.controllerFor('reviews').loadEntries();
   },
 
+  setupController: function(controller, model) {
+    this._super(controller, model);
+    return this.store.find('project');
+  },
+
   actions: {
     refresh: function() {
       this.refresh();

@@ -29,7 +29,7 @@ class EntriesController < ApplicationController
   end
 
   def filter_params
-    params.permit(:user_id, date_range: [])
+    params.permit(:user_id, :project, date_range: [], project_ids: [])
   end
 
   def filtered_entries
@@ -42,6 +42,11 @@ class EntriesController < ApplicationController
       minimum_date = Date.parse(filters[:date_range][0])
       maximum_date = Date.parse(filters[:date_range][1])
       scope = scope.where(started_at: minimum_date.beginning_of_day..maximum_date.end_of_day)
+    end
+    if filters[:project].to_s == 'false'
+      scope = scope.where(project_id: nil)
+    elsif filters[:project_ids]
+      scope = scope.where(project_id: filters[:project_ids])
     end
     scope
   end

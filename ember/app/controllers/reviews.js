@@ -10,6 +10,14 @@ export default  Ember.ArrayController.extend({
   itemController: 'entry',
   entriesByProject: groupBy('@this.@each.project', 'project', ProjectEntryList),
 
+  projects: function() {
+    return this.store.all('project');
+  }.property(),
+
+  selectedProjects: function() {
+    return this.get('projects').toArray();
+  }.property('projects.length'),
+
   hasEdit: function() {
     return this.someProperty('isEditing');
   }.property('@each.isEditing'),
@@ -30,9 +38,27 @@ export default  Ember.ArrayController.extend({
     var userId = this.get('currentUser.id');
     var startDate = this.get('startDate');
     var endDate = this.get('endDate');
-    return this.store.find('entry', {
+
+    var params = {
       user_id: userId,
       date_range: [ startDate, endDate ]
-    });
+    };
+
+    var projectIds = this.get('selectedProjects').mapProperty('id');
+    if (projectIds.get('length') !== this.get('projects.length')) {
+      if (projectIds.get('length') === 0) {
+        params.project = false;
+      } else {
+        params.project_ids = projectIds;
+      }
+    }
+    return this.store.find('entry', params);
+  },
+
+  actions: {
+    selectProjects: function(projects) {
+      this.set('selectedProjects', projects);
+      this.send('refresh');
+    }
   }
 });
