@@ -6,19 +6,15 @@ export default Ember.Route.extend({
       this.transitionTo('login');
       return;
     }
-    this.store.find('entry');
   },
 
   model: function() {
-    var userId = this.controllerFor('application').get('currentUser.id');
-    return this.store.filter('entry', function(entry) {
-      return entry.get('startedAt') && entry.get('finishedAt') && entry.get('user.id') === userId;
-    });
+    return this.controllerFor('reviews').loadEntries();
   },
 
-  setupController: function(controller) {
-    this._super.apply(this, arguments);
-    controller.buildNewEntry();
+  setupController: function(controller, model) {
+    this._super(controller, model);
+    return this.store.find('project');
   },
 
   actions: {
@@ -40,6 +36,9 @@ export default Ember.Route.extend({
       }, function() {
         // an entry cannot be saved
       });
+    },
+    refresh: function() {
+      this.refresh();
     }
   }
 });

@@ -13,10 +13,10 @@
   {{#if currentUser}}
     <div class="content">
       <section class="current-week">
-        <span class="current-week-btn">
+        <h3 class="section-btn">
           This week
-        </span>
-        <div class="current-week-hover">
+        </h3>
+        <div class="section-content">
           <h3>Me</h3>
           <ul>
             {{#each myProjectsDurationInCurrentWeek}}
@@ -60,6 +60,15 @@
             </li>
           </ul>
         </div>
+      </section><section class="timer">
+        {{#link-to "index" class="section-btn"}}
+          Timer
+        {{/link-to}}
+      </section><section class="reviews">
+        {{#link-to "reviews" class="section-btn"}}
+          Reviews
+        {{/link-to}}
+        </h3>
       </section>
     </div>
   {{/if}}
@@ -67,4 +76,5 @@
 
 <div class="content">
   {{outlet}}
+  {{outlet "loading"}}
 </div>

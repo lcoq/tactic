@@ -20,6 +20,58 @@ describe EntriesController do
       result['projects'].length.must_equal 2
       result['projects'].map { |r| r['id'] }.to_set.must_equal projects.map(&:id).to_set
     end
+    it 'filters by user ids' do
+      adrien = create(:user, name: 'adrien')
+      louis = create(:user, name: 'louis')
+      pom = create(:user, name: 'pom')
+
+      create_list(:entry, 2)
+      create_list(:entry, 3, user: adrien)
+
+      entries = [
+        create_list(:entry, 4, user: louis),
+        create_list(:entry, 5, user: pom)
+      ].flatten
+
+      get :index, user_ids: [ louis, pom ].map(&:id)
+      result['entries'].map { |r| r['id'] }.to_set.must_equal entries.map(&:id).to_set
+    end
+    it 'filters by date range' do
+      create(:entry, started_at: DateTime.parse('2015-03-26 17:57:30'))
+      create(:entry, started_at: DateTime.parse('2015-03-26 20:32:12'))
+      entries = [
+        create(:entry, started_at: DateTime.parse('2015-03-27 10:12:10')),
+        create(:entry, started_at: DateTime.parse('2015-03-28 9:15:58')),
+        create(:entry, started_at: DateTime.parse('2015-03-29 19:57:34'))
+      ]
+      get :index, date_range: [ '2015-03-27', '2015-03-29' ]
+      result['entries'].map { |r| r['id'] }.to_set.must_equal entries.map(&:id).to_set
+    end
+    it 'filters by project ids' do
+      tactic = create(:project, name: 'tactic')
+      google = create(:project, name: 'google')
+      android = create(:project, name: 'android')
+      ubuntu = create(:project, name: 'ubuntu')
+
+      create_list(:entry, 2)
+      create_list(:entry, 3, project: tactic)
+      create_list(:entry, 5, project: ubuntu)
+
+      entries = [
+        create_list(:entry, 4, project: google),
+        create_list(:entry, 5, project: android)
+      ].flatten
+
+      get :index, project_ids: [ google, android ].map(&:id)
+      result['entries'].map { |r| r['id'] }.to_set.must_equal entries.map(&:id).to_set
+    end
+    it 'filters without project' do
+      create_list(:entry, 4, project: create(:project))
+      create_list(:entry, 5, project: create(:project))
+      entries = create_list(:entry, 3)
+      get :index, project: false
+      result['entries'].map { |r| r['id'] }.to_set.must_equal entries.map(&:id).to_set
+    end
   end
   describe 'create' do
     let(:attributes) {

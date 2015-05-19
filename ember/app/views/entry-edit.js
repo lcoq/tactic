@@ -20,9 +20,18 @@ export default Ember.View.extend({
   setScheduleSaveOnMouseUp: function() {
     var self = this, eventName = this.get('mouseUpEventName');
     Ember.$(document).on(eventName, function(event) {
-      if (self.$().has(event.target).length === 0) {
+      if (self.$().has(event.target).length === 0 && Ember.$('#ui-datepicker-div').has(event.target).length === 0) {
         self.get('controller').send('scheduleSaveEntry');
       }
+    });
+  }.on('didInsertElement'),
+
+  initializeDatePicker: function() {
+    this.$('.datepicker').datepicker({
+      firstDay: 1,
+      dateFormat: 'yy-mm-dd',
+      prevText: '<',
+      nextText: '>'
     });
   }.on('didInsertElement'),
 

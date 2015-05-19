@@ -7,6 +7,11 @@ describe ProjectsController do
       get :index, name: 'pro'
       assert_response :success
     end
+    it 'loads all projects without parameter' do
+      create_list(:project, 8)
+      get :index
+      result['projects'].length.must_equal 8
+    end
     it 'loads projects matching the given name' do
       create(:project, name: 'tactic')
       create(:project, name: 'tactoc')

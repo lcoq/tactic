@@ -2,7 +2,7 @@ import Ember from 'ember';
 import EntryForm from '../models/entry-form';
 
 export default Ember.ObjectController.extend({
-  needs: 'index',
+  canStartEdit: Ember.computed.not('parentController.hasEdit'),
 
   isEditing: null,
 
@@ -39,6 +39,18 @@ export default Ember.ObjectController.extend({
 
   saveEntryTimer: null,
   saveScheduled: Ember.computed.bool('saveEntryTimer'),
+  savePromise: null,
+
+  runPendingSave: function() {
+    var timer = this.get('saveEntryTimer');
+    if (timer) {
+      Ember.run.cancel(timer);
+      Ember.run(timer);
+      return this.get('savePromise');
+    } else {
+      return new Ember.RSVP.resolve();
+    }
+  },
 
   _findProjects: function() {
     var editForm = this.get('editForm');
@@ -49,7 +61,7 @@ export default Ember.ObjectController.extend({
 
   actions: {
     editEntry: function(editFocus) {
-      if (this.get('controllers.index.hasEdit')) {
+      if (!this.get('canStartEdit')) {
         return;
       }
       var saveTimer = this.get('saveEntryTimer');
@@ -87,7 +99,7 @@ export default Ember.ObjectController.extend({
       }
     },
     saveEntry: function() {
-      this.get('content').save();
+      this.set('savePromise', this.get('content').save());
       this.setInitialProject();
       this.notifyPropertyChange('differedStartedAtDay');
       this.notifyPropertyChange('differedStartedAtTime');

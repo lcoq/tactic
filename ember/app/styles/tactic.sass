@@ -1,6 +1,56 @@
 @import "compass/typography/lists/bullets"
 @import "compass/css3/border-radius"
 
+a
+  color: #333
+  text-decoration: none
+
+.ui-datepicker
+  display: none
+  padding: 20px
+  background: #EAEAEA
+  font-size: 0.85em
+
+.ui-datepicker-inline
+  display: inline-block
+
+.ui-datepicker-calendar
+  th
+    background-color: #BBB
+  td
+    padding: 8px
+    background-color: #FBFBFB
+    text-align: center
+
+    &.ui-datepicker-current-day
+      background-color: #4BC800
+      font-weight: bold
+      a
+        color: #EEE
+
+.ui-datepicker-header
+  padding: 0 10px 10px 10px
+
+.ui-datepicker-prev, .ui-datepicker-next
+  display: inline-block
+  width: 20px
+  height: 20px
+  line-height: 20px
+  text-align: center
+  cursor: pointer
+  &.ui-datepicker-prev
+    float: left
+  &.ui-datepicker-next
+    float: right
+
+.ui-datepicker-title
+  line-height: 20px
+  text-align: center
+  cursor: default
+
+.ui-datepicker-today
+  font-weight: bold
+
 body
   background-color: #FBFBFB
   margin: 0
@@ -31,18 +81,24 @@ body
       font-size: 0.7em
       font-weight: normal
 
-  .current-week
+  .current-week, .reviews, .timer
     display: inline-block
 
-    .current-week-btn
-      background: #555
+    .section-btn
       display: inline-block
       padding: 14px 14px 12px 14px
+      margin: 0
+      font-weight: normal
+      font-size: 1em
 
-    &:hover .current-week-hover
+  .current-week
+    .section-btn
+      background: #555
+
+    &:hover .section-content
       display: block
 
-    .current-week-hover
+    .section-content
       display: none
       position: absolute
       background-color: #666
@@ -68,6 +124,19 @@ body
             padding-left: 25px
             padding-right: 10px
 
+  .reviews, .timer
+    .section-btn
+      color: #eee
+
+      &.active
+        display: none
+
+
+    &:hover .section-btn
+      background: #DDD
+      color: #555
+      cursor: pointer
+
 .content
   display: block
   width: 1080px
@@ -75,6 +144,8 @@ body
   padding: 0 200px
 
 .new-entry
+  padding: 40px 0
+
   .project
     display: inline-block
     width: 18%
@@ -102,7 +173,6 @@ body
     border: 1px solid #DDD
     +border-radius(4px, 4px)
     padding: 15px
-    margin: 40px 0
     &.title
       width: 45%
     &.duration
@@ -125,6 +195,52 @@ body
     &.stop-button
       background-color: #C84B00
 
+.entry-filters
+  padding: 40px 0
+
+  .datepicker
+    background: transparent
+    border: none
+    font-size: 1.5em
+    margin: 0 8px
+    width: 180px
+    text-align: center
+    color: #666
+
+  .section
+    width: 24%
+    display: inline-block
+    box-sizing: border-box
+
+    h3
+      color: #666
+      font-weight: normal
+      padding: 10px
+      margin: 0
+
+    &.project-section, &.user-section
+      position: relative
+
+      ul.projects, ul.users
+        display: none
+        position: absolute
+        list-style: none
+        background: #EAEAEA
+        box-sizing: border-box
+        width: 100%
+        margin: 0
+        padding: 10px
+
+        li label
+          padding: 15px 10px
+          display: block
+          box-sizing: border-box
+
+      &:hover
+        background: #fff
+        border: 1px solid #ddd
+        .projects, .users
+          display: block
 
 .entry-list
   color: #333
@@ -165,6 +281,7 @@ body
       text-align: center
       padding: 0 15px
       width: 100px
+
     .time-range
       color: #666
       font-size: 0.8em
@@ -174,6 +291,12 @@ body
       a
         color: #888
         font-size: 0.9em
+
+    &:not(.entry-edit)
+      .date
+        font-size: 0.9em
+        padding: 0 35px 0 10px
+
 
     &.entry-edit
       input
@@ -240,3 +363,20 @@ body
       border-bottom: 1px solid #DDD
       &:hover
         background-color: #F1F1F1
+
+.loading
+  .loading-bg
+    position: fixed
+    top: 0
+    left: 0
+    width: 100%
+    height: 100%
+    opacity: 0.1
+    background-color: black
+
+  h1
+    position: fixed
+    top: 50%
+    left: 50%
+    transform: translate(-50%,-50%)
+    color: #FFF

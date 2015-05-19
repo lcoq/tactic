@@ -1,0 +1,97 @@
+<section class="entry-filters">
+  <div class="section user-section js-user-section">
+    <h3>
+      Users
+      <i>({{selectedUsers.length}})</i>
+    </h3>
+    <ul class="users">
+      {{#each user in users}}
+        {{#view view.UserItem item=user tagName="li"}}
+          <label>
+            {{input type="checkbox" checked=view.selected viewName="checkbox"}}
+            {{user.name}}
+          </label>
+        {{/view}}
+      {{/each}}
+    </ul>
+  </div>
+  <div class="section project-section js-project-section">
+    <h3>
+      Projects
+      <i>({{selectedProjects.length}})</i>
+      &#x25BC;
+    </h3>
+    <ul class="projects">
+      {{#each project in projects}}
+        {{#view view.ProjectItem item=project tagName="li"}}
+          <label>
+            {{input type="checkbox" checked=view.selected viewName="checkbox"}}
+            {{project.name}}
+          </label>
+        {{/view}}
+      {{/each}}
+    </ul>
+  </div>
+  <div class="section">
+    from
+    {{input value=startDate classNames="datepicker"}}
+  </div>
+  <div class="section">
+    to
+    {{input value=endDate classNames="datepicker js-end-date"}}
+  </div>
+</section>
+
+<section class="entry-list">
+  {{#each entryList in entriesByProject}}
+    <h2>
+      {{#if entryList.project.name}}
+        {{entryList.project.name}}
+      {{else}}
+        <i>No project</i>
+      {{/if}}
+      <span class="duration">
+        {{format-duration entryList.duration}}
+      </span>
+    </h2>
+    <ul>
+      {{#each entry in entryList}}
+        {{#if entry.isEditing}}
+          {{view "entry-edit" context=entry.editForm focusOn=entry.editFocus}}
+        {{else}}
+          <li {{bind-attr class=":entry entry.isDeleting:deleting" }}>
+            <div>
+              <span class="title" {{action "editEntry" "title"}}>
+                {{#if entry.title}}
+                  {{entry.title}}
+                {{else}}
+                  <i>No title</i>
+                {{/if}}
+              </span>
+              <span class="duration" {{action "editEntry" "time"}}>{{format-duration entry.duration}}</span>
+              <span class="date" {{action "editEntry" "date"}}>{{moment entry.startedAt "DD/MM"}}</span>
+              <span class="time-range"  {{action "editEntry" "time"}}>
+                {{entry.startedAtHour}}
+                -
+                {{entry.finishedAtHour}}
+              </span>
+            </div>
+            <div class="actions">
+              {{#if entry.saveScheduled}}
+                <a href="" {{action "cancelSaveEntry"}}>
+                  Restore changes
+                </a>
+              {{else}} {{#if entry.isDeleting}}
+                <a href="" {{action "cancelDeleteEntry"}}>
+                  Cancel deletion
+                </a>
+              {{else}}
+                <a href="" {{action "deleteEntry"}}>Delete</a>
+              {{/if}}{{/if}}
+            </div>
+          </li>
+        {{/if}}
+      {{/each}}
+    </ul>
+  {{/each}}
+</section>
