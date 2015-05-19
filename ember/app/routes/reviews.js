@@ -18,6 +18,25 @@ export default Ember.Route.extend({
   },
 
   actions: {
+    willTransition: function(transition) {
+      if (transition.data.restored) {
+        return;
+      }
+      transition.abort();
+
+      var promises = this.controller.filterProperty('saveScheduled').map(function(entry) {
+        return entry.runPendingSave();
+      });
+
+      this.render('loading', { outlet: 'loading' });
+
+      Ember.RSVP.all(promises).then(function() {
+        transition.data.restored = true;
+        transition.retry();
+      }, function() {
+        // an entry cannot be saved
+      });
+    },
     refresh: function() {
       this.refresh();
     }
