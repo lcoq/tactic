@@ -203,12 +203,12 @@ body
     border: none
     font-size: 1.5em
     margin: 0 8px
-    width: 280px
+    width: 180px
     text-align: center
     color: #666
 
   .section
-    width: 33%
+    width: 24%
     display: inline-block
     box-sizing: border-box
 
@@ -218,10 +218,10 @@ body
       padding: 10px
       margin: 0
 
-    &.project-section
+    &.project-section, &.user-section
       position: relative
 
-      ul.projects
+      ul.projects, ul.users
         display: none
         position: absolute
         list-style: none
@@ -239,7 +239,7 @@ body
       &:hover
         background: #fff
         border: 1px solid #ddd
-        .projects
+        .projects, .users
           display: block
 
 .entry-list

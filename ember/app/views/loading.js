@@ -2,8 +2,7 @@ import Ember from 'ember';
 
 export default Ember.View.extend({
   animate: function() {
-    var loading = this.$('.loading-bg')
-    loading.animate({ opacity: 0.6 }, 3500);
+    this.$('.loading-bg').animate({ opacity: 0.6 }, 3500);
   }.on('didInsertElement'),
 
   hide: function() {

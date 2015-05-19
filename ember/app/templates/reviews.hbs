@@ -1,4 +1,20 @@
 <section class="entry-filters">
+  <div class="section user-section js-user-section">
+    <h3>
+      Users
+      <i>({{selectedUsers.length}})</i>
+    </h3>
+    <ul class="users">
+      {{#each user in users}}
+        {{#view view.UserItem item=user tagName="li"}}
+          <label>
+            {{input type="checkbox" checked=view.selected viewName="checkbox"}}
+            {{user.name}}
+          </label>
+        {{/view}}
+      {{/each}}
+    </ul>
+  </div>
   <div class="section project-section js-project-section">
     <h3>
       Projects
@@ -7,9 +23,9 @@
     </h3>
     <ul class="projects">
       {{#each project in projects}}
-        {{#view view.ProjectItem project=project tagName="li"}}
+        {{#view view.ProjectItem item=project tagName="li"}}
           <label>
-            {{input type="checkbox" checked=view.projectSelected viewName="checkbox"}}
+            {{input type="checkbox" checked=view.selected viewName="checkbox"}}
             {{project.name}}
           </label>
         {{/view}}

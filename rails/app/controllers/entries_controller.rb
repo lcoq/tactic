@@ -29,14 +29,14 @@ class EntriesController < ApplicationController
   end
 
   def filter_params
-    params.permit(:user_id, :project, date_range: [], project_ids: [])
+    params.permit(:project, user_ids: [], date_range: [], project_ids: [])
   end
 
   def filtered_entries
     filters = filter_params
     scope = Entry
-    if filters[:user_id]
-      scope = scope.where(user_id: filters[:user_id])
+    if filters[:user_ids]
+      scope = scope.where(user_id: filters[:user_ids])
     end
     if filters[:date_range]
       minimum_date = Date.parse(filters[:date_range][0])

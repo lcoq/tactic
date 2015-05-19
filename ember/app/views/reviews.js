@@ -4,24 +4,26 @@ function arrayEquals(arr1, arr2) {
   return Ember.$(arr1).not(arr2).length === 0 && Ember.$(arr2).not(arr1).length === 0;
 }
 
-var ProjectItem = Ember.View.extend({
-  projectSelected: function(key, value) {
-    var project = this.get('project'), view = this.get('parentView');
+var SelectableItem = Ember.View.extend({
+  array: Ember.required(),
+  item: Ember.required(),
+  selected: function(key, value) {
+    var item = this.get('item'), array = this.get('array');
     if (arguments.length === 2) {
       if (value) {
-        view.get('selectedProjects').pushObject(project);
+        array.pushObject(item);
         return true;
       } else {
-        view.get('selectedProjects').removeObject(project);
+        array.removeObject(item);
         return false;
       }
     }
-    return view.get('selectedProjects').contains(project);
-  }.property('project'),
+    return array.contains(item);
+  }.property('item'),
 
   actions: {
     click: function() {
-      this.toggleProperty('projectSelected');
+      this.toggleProperty('selected');
     }
   }
 });
@@ -58,5 +60,21 @@ export default Ember.View.extend({
     });
   }.on('didInsertElement'),
 
-  ProjectItem: ProjectItem
+  ProjectItem: SelectableItem.extend({ array: Ember.computed.alias('parentView.selectedProjects') }),
+
+  selectedUsers: function() {
+    return this.get('controller.selectedUsers').copy();
+  }.property('controller.selectedUsers'),
+
+  refreshOnUsersFocusOut: function() {
+    var view = this, controller = this.get('controller');
+    this.$('.js-user-section').on('mouseleave', function() {
+      var viewUsers = view.get('selectedUsers');
+      if (!arrayEquals(controller.get('selectedUsers').mapProperty('id'), viewUsers.mapProperty('id'))) {
+        controller.send('selectUsers', viewUsers);
+      }
+    });
+  }.on('didInsertElement'),
+
+  UserItem: SelectableItem.extend({ array: Ember.computed.alias('parentView.selectedUsers') })
 });
